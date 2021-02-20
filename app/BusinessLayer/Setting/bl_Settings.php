@@ -1,9 +1,9 @@
 <?php
-namespace App\BusinessLayer\Order;
+namespace App\BusinessLayer\Setting;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
 
-class bl_Order{
+class bl_Settings{
 
     private $config          = false;
     private $_model          = false;

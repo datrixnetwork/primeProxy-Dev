@@ -24,11 +24,45 @@ class bl_User{
 
 
     public function create($data){
-        return Helper::MakeResponse('info');
+        $data['body']['user_password'] = md5($data['body']['user_password']);
+        $response = $this->_model['User']::updateOrCreate($data['body']);
+        return Helper::MakeResponse('ok',$response);
+    }
+
+    public function show($request,$id=false){
+        if(!$id){
+            $response = $this->_model['User']::get();
+        }else{
+            $response = $this->_model['User']::find($id);
+        }
+        if(blank($response)){
+            throw new Exception("No Data found", 404);
+        }
+
+        return Helper::MakeResponse('ok',$response);
+    }
+
+    public function remove($request,$id){
+        if(!is_numeric($id)){
+            throw new Exception("Id Is not numeric", 404);
+        }
+        $response = $this->_model['User']::destroy($id);
+        return Helper::MakeResponse('ok',$response);
+    }
+
+    public function update($request,$id){
+        if(!is_numeric($id)){
+            throw new Exception("Id Is not numeric", 404);
+        }
+        $request['body']['user_password'] = md5($request['body']['user_password']);
+        $this->_model['User']::where($this->_model['User']->getKeyName(),$id)->update($request['body']);
+        $response = $this->_model['User']::find($id);
+        return Helper::MakeResponse('ok',$response);
+
     }
 
 
-    public function show($data){
+    public function login($data){
         $mainData = $data['reqBody'];
 
         if($this->validateLoginData($mainData)['status'] == false){
@@ -38,21 +72,18 @@ class bl_User{
         if(Auth::attempt($mainData)){
             $userId          = Auth::id();
             $userInfo        = $this->_model['User']::with('userInfo')->find($userId);
-            $accessToken     = $userInfo->createToken('authToken')->accessToken;
-            $data            = ['user'=>$userInfo,'accessToken'=>$accessToken];
+
+            if($mainData['user_role_id'] == 1){
+                $accessToken     = $userInfo->createToken('authToken',['validate-admin'])->accessToken;
+            }else{
+                $accessToken     = $userInfo->createToken('authToken')->accessToken;
+            }
+
+            $data            = ['Users'=>$userInfo,'accessToken'=>$accessToken];
         }else{
             throw new Exception("Wrong Credintials", 403);
         }
         return Helper::MakeResponse('ok',$data);
-    }
-
-
-    public function remove($request,$id){
-
-    }
-
-    public function update($request,$id){
-
     }
 
     private function validateLoginData($data){

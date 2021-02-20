@@ -2,8 +2,9 @@
 namespace App\BusinessLayer\Order;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
+use Exception;
 
-class bl_Order{
+class bl_OrderAttachment{
 
     private $config          = false;
     private $_model          = false;
@@ -18,7 +19,15 @@ class bl_Order{
 
     public function create($data){
 
-        $response = $this->_model::create($data['body']);
+        if(!$data['reqBody']['attachment']){
+            throw new Exception("No files attached", 404);
+        }
+        $file   = $data['reqBody']['attachment'];
+        $file->move(public_path('\images\uploads'), $file->getClientOriginalName());
+
+        $data['reqBody']['attachment'] = $data['reqBody']['attachment']->getClientOriginalName();
+
+        $response = $this->_model::create($data['reqBody']);
         return Helper::MakeResponse('ok',$response);
     }
 

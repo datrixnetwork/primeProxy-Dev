@@ -30,7 +30,9 @@ class bl_Product{
         }else{
             $response = $this->_model::find($id);
         }
-
+        if(blank($response)){
+            throw new Exception("No data found", 404);
+        }
         return Helper::MakeResponse('ok',$response);
     }
 

@@ -26,7 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         Passport::routes();
         Passport::tokensCan([
-            'check-proxy' => 'Proxy Authentication',
+            'validate-admin' => 'Admin Authentication',
         ]);
         //
     }

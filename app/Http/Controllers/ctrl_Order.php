@@ -116,7 +116,6 @@ class ctrl_Order extends Controller
     public function update(Request $request, $id)
     {
 
-
         //MA - Set Client info and request body data
         $data = Helper::manageRequestData($request,true);
 

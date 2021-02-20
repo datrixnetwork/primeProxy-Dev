@@ -1,9 +1,9 @@
 <?php
-namespace App\BusinessLayer\Order;
+namespace App\BusinessLayer\Setting;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
 
-class bl_Order{
+class bl_Status{
 
     private $config          = false;
     private $_model          = false;
@@ -24,7 +24,6 @@ class bl_Order{
 
 
     public function show($data,$id=false){
-
         if(!$id){
             $response = $this->_model::get();
         }else{

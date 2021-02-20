@@ -41,46 +41,50 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         $obj = get_class($exception);
-
         switch($obj){
             case 'Throwable':
                  $status    = 'failed';
                  $code      = ($exception->getCode() > 0? $exception->getCode() :404);
                  $message   = $exception->getMessage();
-                 return response()->json(['status' => $status,'code'=>$code, 'errors' => ['data' => $message]], $code);
+                 return response(array('status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code),404);
 
             break;
             case 'Exception':
                 $status    = 'failed';
                 $code      = ($exception->getCode() > 0? $exception->getCode() :401);
                 $message   = $exception->getMessage();
-                return response()->json(['status' => $status,'code'=>$code, 'errors' => ['data' => $message]], $code);
+                return response(array('status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code),401);
             break;
             case 'Illuminate\Database\QueryException':
                 $status    = 'failed';
-                $code      = ($exception->getCode() > 0? $exception->getCode() :404);
+                $code      = ($exception->getCode() > 0? $exception->getCode() :502);
                 $message   = $exception->getMessage();
                 $errorInfo = $exception->getPrevious()->errorInfo;
-                return response()->json(['status' => $status,'code'=>$code, 'errors' => ['data' => $message,'errorInfo'=>$errorInfo]], $code);
+                return response(array(['status' => $status,'code'=>$code, 'errors' => ['data' => $message,'errorInfo'=>$errorInfo],$code]),502);
             break;
             case 'HttpClientException':
                 $status    = 'failed';
                 $code      = ($exception->getCode() > 0? $exception->getCode() :425);
                 $message   = $exception->getMessage();
-                return response()->json(['status' => $status,'code'=>$code, 'errors' => ['data' => $message]], $code);
+                return response(array('status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code),425);
             break;
-            case 'InvalidArgumentException':
+            case 'Illuminate\Auth\AuthenticationException':
                 $status    = 'failed';
                 $code      = ($exception->getCode() > 0? $exception->getCode() :425);
                 $message   = $exception->getMessage();
-                return response()->json(['status' => $status,'code'=>$code, 'errors' => ['data' => $message]], $code);
+                return response(array('status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code),425);
             break;
-
+            case 'AuthenticationException ':
+                $status    = 'failed';
+                $code      = ($exception->getCode() > 0? $exception->getCode() :403);
+                $message   = $exception->getMessage();
+                return response(array('status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code),403);
+            break;
             default:
                 $status    = 'failed';
                 $code      = ($exception->getCode() > 0 ?$exception->getCode():501);
                 $message   = $exception->getMessage();
-                return response()->json(['status' => $status,'code'=>$code, 'errors' => ['data' => $message]], $code);
+                return response(array('status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code),500);
             break;
         }
 

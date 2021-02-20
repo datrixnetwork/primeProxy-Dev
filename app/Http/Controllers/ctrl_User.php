@@ -21,9 +21,20 @@ class ctrl_User extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->show($data);
+        return $response;
     }
 
     /**
@@ -44,7 +55,21 @@ class ctrl_User extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        $requestedData           = array('body'=>$data['reqBody']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->create($requestedData);
+        return $response;
+
     }
 
     /**
@@ -53,9 +78,20 @@ class ctrl_User extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        //
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->show($data,$id);
+        return $response;
     }
 
     /**
@@ -78,7 +114,22 @@ class ctrl_User extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        $requestedData           = array('body'=>$data['reqBody']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->update($requestedData,$id);
+        return $response;
+
+
     }
 
     /**
@@ -87,10 +138,24 @@ class ctrl_User extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->remove($data,$id);
+        return $response;
+
     }
+
     public function login(Request $request){
 
         //MA - Set Client info and request body data
@@ -103,7 +168,7 @@ class ctrl_User extends Controller
         $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
 
         //Load BL Function
-        $response                = $buisnessLayer->show($data);
+        $response                = $buisnessLayer->login($data);
         return $response;
 
 

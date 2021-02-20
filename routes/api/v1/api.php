@@ -18,17 +18,32 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('header.auth')->group(function(){
     // v1.0 - Auth prefix Group
     Route::prefix('/auth')->group(function(){
-        Route::post('/user/login','App\Http\Controllers\ctrl_User@login');
-        Route::post('/user/logout','App\Http\Controllers\ctrl_User@logout')->middleware('auth:api');
-        Route::post('/user/signup','App\Http\Controllers\ctrl_User_Info@store');
+        Route::post('/users/login','App\Http\Controllers\ctrl_User@login');
+        Route::post('/users/logout','App\Http\Controllers\ctrl_User@logout')->middleware('auth:api');
+        Route::post('/users/signup','App\Http\Controllers\ctrl_User_Info@store');
     });
 
     Route::middleware('auth:api')->group(function(){
-        // v1.0 - Product group
-        Route::resource('/products','App\Http\Controllers\ctrl_Product');
-        Route::resource('/sellers','App\Http\Controllers\ctrl_Seller');
-        Route::resource('/orders','App\Http\Controllers\ctrl_Order');
-        Route::get('order/{id}','App\Http\Controllers\ctrl_Order@showOrderView');
+
+        Route::prefix('/admin')->group(function(){
+
+            Route::middleware(['admin.auth', 'scope:validate-admin'])->group(function(){
+                // v1.0 - Product group
+                Route::resource('/products','App\Http\Controllers\ctrl_Product');
+                Route::resource('/sellers','App\Http\Controllers\ctrl_Seller');
+                Route::resource('/orders','App\Http\Controllers\ctrl_Order');
+                Route::resource('/orders/{orderId}/attachments','App\Http\Controllers\ctrl_Order_Attachment');
+                Route::resource('/users','App\Http\Controllers\ctrl_User');
+                Route::resource('/status','App\Http\Controllers\ctrl_Order_Status');
+                Route::resource('/settings','App\Http\Controllers\ctrl_Setting');
+            });
+
+        });
+
+        Route::prefix('/proxy')->group(function(){
+
+        });
+
     });
 
 });

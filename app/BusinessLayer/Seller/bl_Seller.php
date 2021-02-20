@@ -7,7 +7,6 @@ class bl_Seller{
 
     private $config          = false;
     private $_model          = false;
-    public  $successResponse = ['status'=>'success','Code'=>200,'message'=>'Your request has been processed successfully'];
 
     public function __construct($data){
         if(!$this->_model){
@@ -48,7 +47,7 @@ class bl_Seller{
         if(!is_numeric($id)){
             throw new Exception("Id Is not numeric", 404);
         }
-        $this->_model::where('id', $id)->update($request['body']);
+        $this->_model::where('id', $id)->update($request['body'],$id);
         $response = $this->_model::find($id);
         return Helper::MakeResponse('ok',$response);
 
