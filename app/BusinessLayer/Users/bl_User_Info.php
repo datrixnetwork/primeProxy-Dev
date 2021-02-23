@@ -31,7 +31,7 @@ class bl_User_Info{
         }
 
         $firstName              = $data0['first_name'];
-        $userName               = Str::lower($firstName).rand(10,1000000).'@dtxOms.com';
+        $userName               = Str::lower($firstName).rand(10,1000000).'@primeMarket.com';
         $userPassword           = md5(Helper::generateRandomString(8));
 
         try{

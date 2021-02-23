@@ -178,4 +178,38 @@ class ctrl_User extends Controller
         $response = Helper::destroyAccessToken($request); // Helper function
         return Helper::MakeResponse('ok',$response);
     }
+
+    public function forogtPassword(Request $request){
+
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->forgotPassword($data);
+        return $response;
+
+    }
+
+    public function editPassword(Request $request,int $userId){
+
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request,true);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->editPassword($data,$userId);
+        return $response;
+
+    }
 }

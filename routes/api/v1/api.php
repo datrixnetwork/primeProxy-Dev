@@ -21,6 +21,8 @@ Route::middleware('header.auth')->group(function(){
         Route::post('/users/login','App\Http\Controllers\ctrl_User@login');
         Route::post('/users/logout','App\Http\Controllers\ctrl_User@logout')->middleware('auth:api');
         Route::post('/users/signup','App\Http\Controllers\ctrl_User_Info@store');
+        Route::post('/users/forgot','App\Http\Controllers\ctrl_User@forogtPassword');
+        Route::post('/users/edit/password/{userId}','App\Http\Controllers\ctrl_User@editPassword');
     });
 
     Route::middleware('auth:api')->group(function(){
@@ -28,6 +30,7 @@ Route::middleware('header.auth')->group(function(){
         Route::prefix('/admin')->group(function(){
 
             Route::middleware(['admin.auth', 'scope:validate-admin'])->group(function(){
+
                 // v1.0 - Product group
                 Route::resource('/products','App\Http\Controllers\ctrl_Product');
                 Route::resource('/sellers','App\Http\Controllers\ctrl_Seller');
@@ -36,6 +39,7 @@ Route::middleware('header.auth')->group(function(){
                 Route::resource('/users','App\Http\Controllers\ctrl_User');
                 Route::resource('/status','App\Http\Controllers\ctrl_Order_Status');
                 Route::resource('/settings','App\Http\Controllers\ctrl_Setting');
+
             });
 
         });

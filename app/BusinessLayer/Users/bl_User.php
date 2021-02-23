@@ -86,6 +86,29 @@ class bl_User{
         return Helper::MakeResponse('ok',$data);
     }
 
+    public function forgotPassword($data){
+
+        if(isset($data['reqBody']['username'])){
+            $response = $this->_model['User']::where('user_name','=',$data['reqBody']['username'])->first();
+            return Helper::MakeResponse('ok',$response);
+        }
+        return Helper::MakeResponse('error');
+    }
+
+    public function editPassword($data,$id){
+
+        if(isset($data['reqBody'])){
+
+            $data['reqBody']['user_password'] = md5($data['reqBody']['user_password']);
+            $response =  $this->_model['User']::where($this->_model['User']->getKeyName(),$id)->update($data['reqBody']);
+
+            $response = $this->_model['User']::find($id);
+
+            return Helper::MakeResponse('ok',$response);
+        }
+
+    }
+
     private function validateLoginData($data){
 
         $validated = TRUE;

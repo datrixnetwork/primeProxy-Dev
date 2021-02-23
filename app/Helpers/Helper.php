@@ -71,12 +71,18 @@ class Helper{
             }else{
                 $requestBody = $request->all();
             }
-            $queryParam = $request->query();
+
+            $queryParam = array();
+
+            if($request->query()){
+                $queryParam = $request->query();
+                $queryParam = SELF::AllowedQueryParam($queryParam);
+            }
 
             $data = [
                 'reqBody'    => $requestBody,
                 'queryString'=> $queryParam,
-                'clientInfo' => $ClientInfo
+                'clientInfo' => $ClientInfo,
             ];
             return $data;
     }
@@ -135,5 +141,16 @@ class Helper{
             $response   = ['status'=>'failed','code'=>403,'message'=>'Access denied due to invalid credentials'];
         }
         return $response;
+    }
+
+    public static function AllowedQueryParam($queryParam){
+        $query = array();
+        if(isset($queryParam['search'])){
+
+            $query['order_no'] = (isset($queryParam['search']['orderNo']) ? $queryParam['search']['orderNo'] : false );
+            $query['product_code'] = (isset($queryParam['search']['productCode']) ? $queryParam['search']['productCode'] : false );
+
+        }
+        return $query;
     }
 }

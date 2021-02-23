@@ -2,6 +2,7 @@
 namespace App\BusinessLayer\Order;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
+use Exception;
 
 class bl_Order{
 
@@ -24,15 +25,26 @@ class bl_Order{
 
 
     public function show($data,$id=false){
+        $query       = $data['query'];
+        $sizeOfQuery = sizeof($query);
 
         if(!$id){
-            $response = $this->_model::get();
-        }else{
+
+            if($sizeOfQuery > 0){
+                $response = $this->_model::where($query)->get();
+            }
+            else{
+                $response = $this->_model::get();
+            }
+        }
+        else{
             $response = $this->_model::find($id);
         }
+
         if(blank($response)){
             throw new Exception("No data found", 404);
         }
+
         return Helper::MakeResponse('ok',$response);
     }
 
