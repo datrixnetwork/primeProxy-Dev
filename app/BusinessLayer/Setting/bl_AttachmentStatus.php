@@ -1,12 +1,10 @@
 <?php
-namespace App\BusinessLayer\Order;
+namespace App\BusinessLayer\Setting;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
 use Exception;
-use App\Models\mdl_Order;
-use Auth;
 
-class bl_OrderAttachment{
+class bl_AttachmentStatus{
 
     private $config          = false;
     private $_model          = false;
@@ -19,25 +17,9 @@ class bl_OrderAttachment{
      }
 
 
-    public function create($data,$id){
+    public function create($data){
 
-        if(!$data['reqBody']['attachment']){
-            throw new Exception("No files attached", 404);
-        }
-        $userId    = Auth::id();
-        $order     = new mdl_Order();
-        $orderData = $order::find($id);
-        $file         = $data['reqBody']['attachment'];
-        $fileName     = $file->getClientOriginalName();
-        $fileExtension= $file->getClientOriginalExtension();
-        $newFileName  = $id.'-'.$orderData->order_no.'-'.$orderData->status_code.'.'.$fileExtension;
-
-        $file->move(public_path("\storage\images\uploads\order\\"), $newFileName);
-
-        $data['reqBody']['attachment'] = $newFileName;
-        $data['reqBody']['created_by'] = $userId;
-
-        $response = $this->_model::create($data['reqBody']);
+        $response = $this->_model::create($data['body']);
         return Helper::MakeResponse('ok',$response);
     }
 

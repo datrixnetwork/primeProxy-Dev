@@ -5,20 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class mdl_User_Payment_Info extends Model
+class mdl_MarketPlace extends Model
 {
     use HasFactory;
     protected $guarded    = [];
-    protected $table      = 'tbl_Users_Payment_Info';
+    protected $table      = 'tbl_Market_Place';
     protected $primaryKey = 'id';
     public $timestamps    = false;
 
     public function newQuery($excludeDeleted = true) {
         return parent::newQuery($excludeDeleted)
             ->where('active', '=', 1);
-    }
-
-    public function paymentGateway(){
-        return $this->hasOne('\App\Models\mdl_Payment_Gateway','id','gateway_id');
     }
 }

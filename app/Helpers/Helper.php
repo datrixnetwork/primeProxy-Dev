@@ -3,6 +3,7 @@
 namespace App\Helpers;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\Models\mdl_Notification as notifcation;
 
 class Helper{
 
@@ -87,7 +88,11 @@ class Helper{
             return $data;
     }
 
+   public static function postNotification($request){
+       $notification = new notifcation;
+       return $notification::create($request);
 
+   }
 
     public static function requestHandler($GetRequestInArray=array()){
 
@@ -145,12 +150,39 @@ class Helper{
 
     public static function AllowedQueryParam($queryParam){
         $query = array();
+
+        $query['draw']    = (isset($queryParam['draw']) ? $queryParam['draw'] : 1 );
+        $query['start']   = (isset($queryParam['start']) ? $queryParam['start'] : 1 );
+        $query['length']  = (isset($queryParam['length']) ? $queryParam['length'] : 10 );
+
         if(isset($queryParam['search'])){
-
-            $query['order_no'] = (isset($queryParam['search']['orderNo']) ? $queryParam['search']['orderNo'] : false );
-            $query['product_code'] = (isset($queryParam['search']['productCode']) ? $queryParam['search']['productCode'] : false );
-
+            $query['search'] = $queryParam['search']['value'];
         }
+        if(isset($queryParam['status_code'])){
+            $query['status_code'] = $queryParam['status_code'];
+        }
+        if(isset($queryParam['active'])){
+            $query['active'] = $queryParam['active'];
+        }
+        if(isset($queryParam['created_by'])){
+            $query['created_by'] = $queryParam['created_by'];
+        }
+        if(isset($queryParam['notify_to'])){
+            $query['notify_to'] = $queryParam['notify_to'];
+        }
+        // if(isset($queryParam['is_login']) || isset($queryParam['is_verified'])){
+            $isLogin    = (isset($queryParam['is_login']) ? $queryParam['is_login'] : '');
+            $isVerified = (isset($queryParam['is_verified']) ? $queryParam['is_verified'] : '');
+
+            $query['otherParam'] = array('is_login'=>$isLogin,'is_verified'=>$isVerified);
+        // }
+
+        // if(isset($queryParam['search'])){
+
+        //     $query['order_no'] = (isset($queryParam['search']['orderNo']) ? $queryParam['search']['orderNo'] : false );
+        //     $query['product_code'] = (isset($queryParam['search']['productCode']) ? $queryParam['search']['productCode'] : false );
+
+        // }
         return $query;
     }
 }

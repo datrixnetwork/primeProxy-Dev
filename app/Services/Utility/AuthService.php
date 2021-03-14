@@ -22,6 +22,7 @@ class AuthService{
             if(!$key || !$id ){
                 return false;
             }
+
             if(!isset($this->platFormKey[$id]) || $this->platFormKey[$id] != $key){
                 return false;
             }

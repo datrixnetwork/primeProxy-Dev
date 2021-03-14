@@ -31,16 +31,67 @@ class bl_User{
 
     public function show($request,$id=false){
         if(!$id){
-            $response = $this->_model['User']::get();
-        }else{
-            $response = $this->_model['User']::find($id);
+
+            $query       = $request['query'];
+            if(isset($request['reqBody']['active'])){
+                $activeFlag  = (isset($request['reqBody']['active']) ? $request['reqBody']['active'] : 1);
+
+                $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+                ->whereHas('userInfo')
+                ->whereHas('userAccountInfo')
+                ->where('is_verified',$activeFlag)
+                ->orderBy('id', 'DESC')
+                ->Paginate($query['length']);
+
+            }
+            else{
+                $query['otherParam'] = array_filter($query['otherParam']);
+                // dd($query['otherParam']);
+                if(isset($query['otherParam'])){
+                    $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+                    ->whereHas('userInfo')
+                    ->whereHas('userAccountInfo')
+                    ->where($query['otherParam'])
+                    ->orderBy('id', 'DESC')
+                    ->Paginate($query['length']);
+                }
+                else{
+                    $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+                    ->whereHas('userInfo')
+                    ->whereHas('userAccountInfo')
+                    ->orderBy('id', 'DESC')
+                    ->Paginate($query['length']);
+                }
+
+            }
+
+
+
+            $perPage = $response->perPage();
+            $total   = $response->total();
+
+            $response0 = array(
+                "draw" => intval($query['draw']),
+                "iTotalRecords" => (int)$response->perPage(),
+                "iTotalDisplayRecords" => (int)$response->total(),
+                'aaData'=>$response->items()
+            );
+            return $response0;
+
         }
-        if(blank($response)){
-            throw new Exception("No Data found", 404);
+        else{
+            $response = $this->_model['User']::with('userInfo')
+            ->with('userAccountInfo',function($query){
+                return $query->with('paymentGateway');
+            })
+            ->with('orders')
+            ->whereHas('userInfo')
+            ->find($id);
+            return $response;
         }
 
-        return Helper::MakeResponse('ok',$response);
     }
+
 
     public function remove($request,$id){
         if(!is_numeric($id)){
@@ -54,10 +105,42 @@ class bl_User{
         if(!is_numeric($id)){
             throw new Exception("Id Is not numeric", 404);
         }
-        $request['body']['user_password'] = md5($request['body']['user_password']);
-        $this->_model['User']::where($this->_model['User']->getKeyName(),$id)->update($request['body']);
-        $response = $this->_model['User']::find($id);
-        return Helper::MakeResponse('ok',$response);
+
+        if(isset($request['body']['is_verified'])){
+
+            $flag     = $request['body']['is_verified'];
+
+            $user     = $this->_model['User']::where($this->_model['User']->getKeyName(),$id)->update($request['body']);
+            $userInfo = $this->_model['User_Info']::where('user_id',$id)->update(['is_user_verified'=>$flag]);
+            $response = $this->_model['User']::find($id);
+            return $response;
+        }
+        else if(isset($request['body']['user_password'])){
+            $request['body']['user_password'] = md5($request['body']['user_password']);
+            $this->_model['User']::where($this->_model['User']->getKeyName(),$id)->update($request['body']);
+            $response = $this->_model['User']::find($id);
+            return $response;
+        }
+        else{
+            $first_name           = $request['body']['first_name'];
+            $last_name            = $request['body']['last_name'];
+            $gender               = $request['body']['gender'];
+            $user_email           = $request['body']['user_email'];
+            $user_phone           = $request['body']['user_phone'];
+            $gateway_id           = $request['body']['gateway_id'];
+            $acc_title            = $request['body']['acc_title'];
+            $acc_number           = $request['body']['acc_number'];
+            $social_profile_link1 = $request['body']['social_profile_link1'];
+            $userInfo             = array('first_name'=>$first_name,'last_name'=>$last_name,'gender'=>$gender,'user_email'=>$user_email,'user_phone'=>$user_phone,'social_profile_link1'=>$social_profile_link1);
+            $paymentGateway       = array('gateway_id'=>$gateway_id,'gateway_id'=>$gateway_id,'acc_title'=>$acc_title,'acc_number'=>$acc_number);
+
+
+            $this->_model['User_Info']::where('user_id',$id)->update($userInfo);
+           $r = $this->_model['User_Payment_Info']::where('user_id',$id)->update($paymentGateway);
+
+            $response = $this->show($request,$id);
+            return $response;
+        }
 
     }
 
@@ -66,14 +149,22 @@ class bl_User{
         $mainData = $data['reqBody'];
 
         if($this->validateLoginData($mainData)['status'] == false){
-            throw new Exception("No username or password found", 403);
+            $message = array('message'=>'Required User name or Password missing!');
+            return Helper::MakeResponse('error',$message);
         }
+        $role = $mainData['user_role_id'];
+        unset($mainData['user_role_id']);
 
         if(Auth::attempt($mainData)){
             $userId          = Auth::id();
-            $userInfo        = $this->_model['User']::with('userInfo')->find($userId);
+            $userInfo        = $this->_model['User']::select('user_name','id','user_role_id')->whereHas('userInfo',function($query){ return $query->where('is_user_verified',1); })->with('userInfo')->where('is_verified',1)->where('user_role_id',$role)->find($userId);
 
-            if($mainData['user_role_id'] == 1){
+            if(blank($userInfo)){
+                $message = array('Invalid Login! User is not active');
+                return Helper::MakeResponse('error',$message);
+            }
+
+            if($role== 1){
                 $accessToken     = $userInfo->createToken('authToken',['validate-admin'])->accessToken;
             }else{
                 $accessToken     = $userInfo->createToken('authToken')->accessToken;
@@ -81,7 +172,8 @@ class bl_User{
 
             $data            = ['Users'=>$userInfo,'accessToken'=>$accessToken];
         }else{
-            throw new Exception("Wrong Credintials", 403);
+            $message = array('message'=>'Wrong Crendtials');
+            return Helper::MakeResponse('error',$message);
         }
         return Helper::MakeResponse('ok',$data);
     }
@@ -115,7 +207,8 @@ class bl_User{
 
         $validator = Validator::make($data, [
             'user_name' => 'required',
-            'user_password' => 'required'
+            'user_password' => 'required',
+            'user_role_id' => 'required'
         ]);
         if ($validator->fails()) {
             $validated = FALSE;
@@ -123,5 +216,12 @@ class bl_User{
         return array('status'=>$validated,'data'=>$validator);
     }
 
+    public function showUserActCount(){
+
+        $userActCount = DB::select("SELECT COUNT(id) AS cnt, SUM(is_login) AS onlineUsers , (COUNT(id) - SUM(is_login)) AS offLineUsers,SUM(IF(is_verified =0,1,0)) AS pendingRequest
+        FROM tbl_Users
+        WHERE active=1");
+        return $userActCount;
+    }
 
 }

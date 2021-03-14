@@ -33,22 +33,35 @@ Route::middleware('header.auth')->group(function(){
 
                 // v1.0 - Product group
                 Route::resource('/products','App\Http\Controllers\ctrl_Product');
+                Route::resource('/market/place','App\Http\Controllers\ctrl_Market');
                 Route::resource('/sellers','App\Http\Controllers\ctrl_Seller');
                 Route::resource('/orders','App\Http\Controllers\ctrl_Order');
+                Route::get('/orders/status/counts','App\Http\Controllers\ctrl_Order@showOrdersCount');
                 Route::resource('/orders/{orderId}/attachments','App\Http\Controllers\ctrl_Order_Attachment');
                 Route::resource('/users','App\Http\Controllers\ctrl_User');
-                Route::resource('/status','App\Http\Controllers\ctrl_Order_Status');
+                Route::get('/users/act/count','App\Http\Controllers\ctrl_User@showUserActCounts');
+                Route::resource('status','App\Http\Controllers\ctrl_Order_Status');
+                Route::resource('/attach/statuses','App\Http\Controllers\ctrl_Attachment_Status');
                 Route::resource('/settings','App\Http\Controllers\ctrl_Setting');
+                Route::resource('/notification','App\Http\Controllers\ctrl_Notification');
 
             });
 
         });
 
         Route::prefix('/proxy')->group(function(){
-
+            Route::resource('/products','App\Http\Controllers\ctrl_Product');
+            Route::resource('/orders','App\Http\Controllers\ctrl_Order');
+            Route::resource('status','App\Http\Controllers\ctrl_Order_Status');
+            Route::resource('/attach/statuses','App\Http\Controllers\ctrl_Attachment_Status');
+            Route::resource('/orders/{orderId}/attachments','App\Http\Controllers\ctrl_Order_Attachment');
+            Route::get('/market/place','App\Http\Controllers\ctrl_Market@index');
+            Route::get('/orders/status/counts','App\Http\Controllers\ctrl_Order@showOrdersCountUser');
+            Route::get('proxy/dashboard','App\Http\Controllers\ctrl_Order@showOrderCommission');
         });
 
     });
+    Route::resource('/setting/payment/gateway','App\Http\Controllers\ctrl_Payment_Gateway');
 
 });
 

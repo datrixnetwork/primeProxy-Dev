@@ -16,6 +16,11 @@ class mdl_User extends Authenticatable
     protected $primaryKey = 'id';
     public $timestamps    = false;
 
+    public function newQuery($excludeDeleted = true) {
+        return parent::newQuery($excludeDeleted)
+            ->where('active', '=', 1);
+    }
+
     protected $attributes = array(
         'created_by' => 'sys-admin'
       );
@@ -26,6 +31,12 @@ class mdl_User extends Authenticatable
 
     public function userInfo(){
         return $this->hasOne('\App\Models\mdl_User_Info','user_id','id');
+    }
+    public function userAccountInfo(){
+        return $this->hasOne('\App\Models\mdl_User_Payment_Info','user_id','id');
+    }
+    public function orders(){
+        return $this->hasMany('\App\Models\mdl_Order','created_by','id');
     }
     public function AauthAcessToken(){
         return $this->hasMany('\App\Models\mdl_OauthAccessToken','user_id','id');

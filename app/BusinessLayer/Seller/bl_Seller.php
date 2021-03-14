@@ -2,6 +2,10 @@
 namespace App\BusinessLayer\Seller;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
+use App\Models\mdl_Company;
+use Illuminate\Pagination\LengthAwarePaginator as Paginator;
+use Exception;
+use DB;
 
 class bl_Seller{
 
@@ -17,20 +21,68 @@ class bl_Seller{
 
     public function create($data){
 
-        $response = $this->_model::create($data['body']);
+        $response = $this->_model::updateOrCreate($data['body']);
         return Helper::MakeResponse('ok',$response);
     }
 
 
     public function show($data,$id=false){
 
+        $query       = $data['query'];
+        $sizeOfQuery = sizeof($query);
+        $company         = new mdl_Company();
+        $sellerLoadSheet = $company::select('seller_load_sheet_url')->first();
+        $sellerLoadSheet = $sellerLoadSheet['seller_load_sheet_url'];
+
         if(!$id){
-            $response = $this->_model::get();
-        }else{
+
+            if($sizeOfQuery > 0){
+                $qVal1       = (isset($query['search']) ? $query['search'] : '');
+                if($qVal1 == ''){
+                    $response = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))
+                    ->Paginate($query['length']);
+                }else{
+                    $response = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))
+                    ->where('seller_code','like',"%$qVal1%")
+                    ->Paginate($query['length']);
+                }
+
+            }
+            else{
+
+                DB::connection()->enableQueryLog();
+
+                // $response0     = $this->_model::select('product_img','product_code','id','proxy_comm','product_qty',DB::raw("'$productImgUrl' AS imgPath"))->get();
+                $response      = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_qty',DB::raw("'$productImgUrl' AS imgPath"))->skip($query['start'])->take($query['length'])->get();
+                $queries = DB::getQueryLog();
+            }
+        }
+        else{
             $response = $this->_model::find($id);
         }
 
-        return Helper::MakeResponse('ok',$response);
+        if(blank($response)){
+            // throw new Exception("No data found", 404);
+            $response = array('data'=>'No data found');
+            return Helper::MakeResponse('error',$response);
+        }
+
+        $perPage = $response->perPage();
+        $total   = $response->total();
+
+        // dd($response->perPage());
+        // echo "<pre>";
+        // print_r($response);
+        // echo "</pre>";
+        $response0 = array(
+            "draw" => intval($query['draw']),
+            "iTotalRecords" => (int)$response->perPage(),
+            "iTotalDisplayRecords" => (int)$response->total(),
+            'aaData'=>$response->items()
+        );
+        $data0 = array($response,$response0);
+
+        return $response0;
     }
 
 

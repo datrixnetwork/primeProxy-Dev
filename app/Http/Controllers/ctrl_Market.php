@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
 
-class ctrl_Seller extends Controller
+class ctrl_Market extends Controller
 {
 
     private $_bl;                                 //Buisness Layer full Name we want to store
-    private $_layer         = 'bl_Seller';      //Buisness Layer Name we want to load
-    private $_buisness      = 'Seller';        //Buisness Layer folder name
-    private $_model         = 'Seller';       //Model Name
+    private $_layer         = 'bl_Market';      //Buisness Layer Name we want to load
+    private $_buisness      = 'Market';        //Buisness Layer folder name
+    private $_model         = 'MarketPlace';       //Model Name
 
     public function __construct(){
         $this->_bl     = $this->_buisness."\\".$this->_layer;
@@ -37,7 +37,8 @@ class ctrl_Seller extends Controller
 
         //Load BL Function
         $response                = $buisnessLayer->show($requestedData);
-        return $response;
+
+        return Helper::MakeResponse('ok',$response);
     }
 
     /**

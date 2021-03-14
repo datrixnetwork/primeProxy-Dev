@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
 
-class ctrl_Seller extends Controller
+class ctrl_Attachment_Status extends Controller
 {
 
-    private $_bl;                                 //Buisness Layer full Name we want to store
-    private $_layer         = 'bl_Seller';      //Buisness Layer Name we want to load
-    private $_buisness      = 'Seller';        //Buisness Layer folder name
-    private $_model         = 'Seller';       //Model Name
+    private $_bl;                                 //Buisness Layer Name
+    private $_layer         = 'bl_AttachmentStatus';      //Buisness Layer Name
+    private $_buisness      = 'Setting';        //Buisness Layer folder name
+    private $_model         = 'Attachment_Status';       //Model Name
 
     public function __construct(){
         $this->_bl     = $this->_buisness."\\".$this->_layer;
@@ -25,7 +25,7 @@ class ctrl_Seller extends Controller
     public function index(Request $request)
     {
         //MA - Set Client info and request body data
-        $data = Helper::manageRequestData($request,true);
+        $data = Helper::manageRequestData($request);
 
         //Save models into data array
         $data['models']['model'] = $this->_model;
@@ -33,10 +33,8 @@ class ctrl_Seller extends Controller
         //Load BL with models
         $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
 
-        $requestedData           = array('reqBody'=>$data['reqBody'],'query'=>$data['queryString']);
-
         //Load BL Function
-        $response                = $buisnessLayer->show($requestedData);
+        $response                = $buisnessLayer->show($data);
         return $response;
     }
 
@@ -117,6 +115,7 @@ class ctrl_Seller extends Controller
      */
     public function update(Request $request, $id)
     {
+
         //MA - Set Client info and request body data
         $data = Helper::manageRequestData($request,true);
 

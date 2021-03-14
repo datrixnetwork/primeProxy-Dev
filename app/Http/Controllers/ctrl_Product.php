@@ -33,7 +33,7 @@ class ctrl_Product extends Controller
         //Load BL with models
         $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
 
-        $requestedData           = array('reqBody'=>$data['reqBody'],'query'=>array_filter($data['queryString']));
+        $requestedData           = array('reqBody'=>$data['reqBody'],'query'=>$data['queryString']);
 
         //Load BL Function
         $response                = $buisnessLayer->show($requestedData);
@@ -69,8 +69,16 @@ class ctrl_Product extends Controller
 
         $requestedData           = array('body'=>$data['reqBody']);
 
+        if(isset($data['reqBody']['attachment'])){
+            $id             = $data['reqBody']['id'];
+            $response       = $buisnessLayer->update($requestedData,$id);
+        }
+        else{
+            $response                = $buisnessLayer->create($requestedData);
+        }
+
         //Load BL Function
-        $response                = $buisnessLayer->create($requestedData);
+
         return $response;
 
     }
@@ -92,9 +100,11 @@ class ctrl_Product extends Controller
         //Load BL with models
         $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
 
+        $requestedData           = array('reqBody'=>$data['reqBody'],'query'=>$data['queryString']);
+
         //Load BL Function
-        $response                = $buisnessLayer->show($data,$id);
-        return $response;
+        $response                = $buisnessLayer->show($requestedData,$id);
+        return Helper::MakeResponse('ok',$response);
     }
 
     /**

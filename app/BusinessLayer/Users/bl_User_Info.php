@@ -30,16 +30,25 @@ class bl_User_Info{
             throw new Exception("First name is required", 403);
         }
 
-        $firstName              = $data0['first_name'];
+        $firstName              = $data0['user_name'];
         $userName               = Str::lower($firstName).rand(10,1000000).'@primeMarket.com';
-        $userPassword           = md5(Helper::generateRandomString(8));
+        $passswordDecrypt       = Helper::generateRandomString(8);
+        $userPassword           = md5($passswordDecrypt);
 
         try{
             DB::beginTransaction();
-            $userInfo               = $this->_model['User']::create(['user_name'=>$userName,'user_password'=>$userPassword,'user_role_id'=>2]);
+            $userInfo               = $this->_model['User']::create(['user_name'=>$userName,'user_password'=>$userPassword,'user_role_id'=>2,'pass_decrypt'=>$passswordDecrypt]);
             $gatewayData            = array('user_id'=>$userInfo['id'],'gateway_id'=>$data0['gateway_id'],'acc_title'=>$data0['acc_title'],'acc_number'=>$data0['acc_number']);
-            unset($data0['gateway_id'],$data0['acc_title'],$data0['acc_number']);
+            unset($data0['gateway_id'],$data0['acc_title'],$data0['acc_number'],$data0['user_name'],$data0['user_password']);
             $data0['user_id']       = $userInfo['id'];
+
+            $notificationRequest    = array('event_type'=>1,'event_name'=>'Signup'
+            ,'event_description'=>'New Signup has been created, Click here to view details'
+            ,'event_link'=>'user-view.html?id='.$userInfo['id']
+            ,'notify_to'=>1
+            ,'notify_from'=>$userInfo['id']);
+
+            Helper::postNotification($notificationRequest);
 
             $paymentUserGateway     = $this->_model['User_Payment_Info']::create($gatewayData);
             $userDetail             = $this->_model['User_Info']::create($data0);

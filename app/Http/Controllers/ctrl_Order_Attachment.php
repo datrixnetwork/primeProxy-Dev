@@ -55,7 +55,7 @@ class ctrl_Order_Attachment extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$id)
     {
 
         //MA - Set Client info and request body data
@@ -68,7 +68,7 @@ class ctrl_Order_Attachment extends Controller
         $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
 
         //Load BL Function
-        $response                = $buisnessLayer->create($data);
+        $response                = $buisnessLayer->create($data,$id);
         return $response;
 
     }

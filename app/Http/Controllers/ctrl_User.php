@@ -10,7 +10,7 @@ class ctrl_User extends Controller
     private $_bl;                                  //Buisness Layer Name
     private $_layer         = 'bl_User';          //Buisness Layer Name
     private $_buisness      = 'Users';           //Buisness Layer folder name
-    private $_model         = 'User_Info,User'; //Model Name
+    private $_model         = 'User_Info,User,User_Payment_Info'; //Model Name
 
     public function __construct(){
         $this->_bl     = $this->_buisness."\\".$this->_layer;
@@ -32,8 +32,10 @@ class ctrl_User extends Controller
         //Load BL with models
         $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
 
+        $requestedData           = array('reqBody'=>$data['reqBody'],'query'=>array_filter($data['queryString']));
+
         //Load BL Function
-        $response                = $buisnessLayer->show($data);
+        $response                = $buisnessLayer->show($requestedData);
         return $response;
     }
 
@@ -91,7 +93,7 @@ class ctrl_User extends Controller
 
         //Load BL Function
         $response                = $buisnessLayer->show($data,$id);
-        return $response;
+        return Helper::MakeResponse('ok',$response);
     }
 
     /**
@@ -115,7 +117,7 @@ class ctrl_User extends Controller
     public function update(Request $request, $id)
     {
         //MA - Set Client info and request body data
-        $data = Helper::manageRequestData($request);
+        $data = Helper::manageRequestData($request,true);
 
         //Save models into data array
         $data['models']['model'] = $this->_model;
@@ -127,7 +129,7 @@ class ctrl_User extends Controller
 
         //Load BL Function
         $response                = $buisnessLayer->update($requestedData,$id);
-        return $response;
+        return Helper::MakeResponse('ok',$response);
 
 
     }
@@ -211,5 +213,20 @@ class ctrl_User extends Controller
         $response                = $buisnessLayer->editPassword($data,$userId);
         return $response;
 
+    }
+
+    public function showUserActCounts(Request $request)  {
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->showUserActCount();
+        return Helper::MakeResponse('ok',$response);
     }
 }

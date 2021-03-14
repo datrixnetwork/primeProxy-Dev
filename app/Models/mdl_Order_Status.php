@@ -17,4 +17,8 @@ class mdl_Order_Status extends Model
         return parent::newQuery($excludeDeleted)
             ->where('active', '=', 1);
     }
+
+    public function orders(){
+        return $this->belongsTo('\App\Models\mdl_Order', 'id', 'status_code');
+    }
 }
