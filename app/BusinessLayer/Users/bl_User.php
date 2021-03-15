@@ -170,16 +170,23 @@ class bl_User{
             }else{
                 $accessToken     = $userInfo->createToken('authToken')->accessToken;
             }
+            $this->_model['User']::where('id',$userId)->update(array('is_login'=>1));
             $company        = new mdl_Company();
-            $startOrderNo   = $company::select('start_order_no')->first();
-            $startOrderNo   = $startOrderNo['start_order_no'];
+            $companyDetails = $company::get()->first();
 
-            $data            = ['Users'=>$userInfo,'accessToken'=>$accessToken];
+            $data            = ['Users'=>$userInfo,'accessToken'=>$accessToken,'companyDetails'=>$companyDetails];
         }else{
             $message = array('message'=>'Wrong Crendtials');
             return Helper::MakeResponse('error',$message);
         }
         return Helper::MakeResponse('ok',$data);
+    }
+
+    public function logout($data){
+        $userId          = Auth::id();
+        $this->_model['User']::where('id',$userId)->update(array('is_login'=>0));
+        $response = Helper::destroyAccessToken($data); // Helper function
+
     }
 
     public function forgotPassword($data){

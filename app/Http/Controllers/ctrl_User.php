@@ -177,7 +177,17 @@ class ctrl_User extends Controller
     }
 
     public function logout(Request $request){
-        $response = Helper::destroyAccessToken($request); // Helper function
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request,true);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->logout($request);
         return Helper::MakeResponse('ok',$response);
     }
 
