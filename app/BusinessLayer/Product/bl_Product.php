@@ -25,6 +25,7 @@ class bl_Product{
         $lastRecord    = $this->_model::orderBy('created_on', 'desc')->first();
         $company       = new mdl_Company();
         $productPrefix = $company::select('product_prefix')->first();
+        $productPrefix = $startOrderNo['product_prefix'];
 
         if(blank($lastRecord)){
             $codePrefix = (isset($data['body']['product_code'])? $data['body']['product_code'] : $productPrefix.'-');
