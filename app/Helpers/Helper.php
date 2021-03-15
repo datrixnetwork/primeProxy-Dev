@@ -138,7 +138,9 @@ class Helper{
             if($isRevoked == true){
                 $request->user()->token()->revoke();
             }else{
-                Auth::user()->AauthAcessToken()->delete();
+                $deletedTokenId = $data->user()->token()->id;
+                $data->user()->token()->delete();
+                Auth::user()->AauthAcessToken()->where('id','=',$deletedTokenId)->delete();
             }
             $response   = ['status'=>'success','code'=>200,'message'=>'Token removed'];
         }

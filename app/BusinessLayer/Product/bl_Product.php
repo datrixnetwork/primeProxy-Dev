@@ -119,7 +119,7 @@ class bl_Product{
             $fileName     = $file->getClientOriginalName();
             $newFileName  = $id.'-'.$fileName;
 
-            $file->move(public_path('\storage\images\uploads\products'), $newFileName);
+            $file->move(public_path('\storage\images\uploads\products\\'), $newFileName);
 
             $request['body']['product_img'] = $newFileName;
             unset($request['body']['attachment']);
