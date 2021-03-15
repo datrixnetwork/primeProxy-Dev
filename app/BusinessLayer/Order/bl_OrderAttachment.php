@@ -32,8 +32,11 @@ class bl_OrderAttachment{
         $fileExtension= $file->getClientOriginalExtension();
         $newFileName  = $id.'-'.$orderData->order_no.'-'.$orderData->status_code.'.'.$fileExtension;
 
-        $file->move(public_path("\storage\images\uploads\order\\"), $newFileName);
+        if(is_dir(public_path().'/storage/images/uploads/order')){
+            if(!$file->move(public_path('/storage/images/uploads/order'), $newFileName)){
 
+            }
+        }
         $data['reqBody']['attachment'] = $newFileName;
         $data['reqBody']['created_by'] = $userId;
 
