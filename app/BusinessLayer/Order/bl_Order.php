@@ -26,10 +26,13 @@ class bl_Order{
         $attachmentData = $data['attachmentData'];
         $orderData['proxy_id'] = Auth::id();
         $orderData['created_by'] = Auth::id();
+        $company       = new mdl_Company();
+        $startOrderNo = $company::select('start_order_no')->first();
+        $startOrderNo = $startOrderNo['start_order_no'];
 
         $lastOrder = $this->_model['Order']::orderBy('created_on', 'desc')->first();
         if(blank($lastOrder) || $lastOrder->order_no == null){
-            $code       ="1000001";
+            $code       =$startOrderNo;
             $orderNo    =$code;
         }else{
             $orderNo     = $lastOrder->order_no;

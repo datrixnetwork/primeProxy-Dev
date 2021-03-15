@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use App\Models\mdl_Company;
 
 class bl_User{
 
@@ -169,6 +170,9 @@ class bl_User{
             }else{
                 $accessToken     = $userInfo->createToken('authToken')->accessToken;
             }
+            $company        = new mdl_Company();
+            $startOrderNo   = $company::select('start_order_no')->first();
+            $startOrderNo   = $startOrderNo['start_order_no'];
 
             $data            = ['Users'=>$userInfo,'accessToken'=>$accessToken];
         }else{

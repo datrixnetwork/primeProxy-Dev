@@ -26,7 +26,7 @@ class bl_Settings{
     public function show($data,$id=false){
 
         if(!$id){
-            $response = $this->_model::get();
+            $response = $this->_model::get()->first();
         }else{
             $response = $this->_model::find($id);
         }

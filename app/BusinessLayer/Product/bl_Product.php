@@ -22,17 +22,19 @@ class bl_Product{
 
     public function create($data){
 
-        $lastRecord = $this->_model::orderBy('created_on', 'desc')->first();
+        $lastRecord    = $this->_model::orderBy('created_on', 'desc')->first();
+        $company       = new mdl_Company();
+        $productPrefix = $company::select('product_prefix')->first();
 
         if(blank($lastRecord)){
-            $codePrefix = (isset($data['body']['product_code'])? $data['body']['product_code'] : 'PRD-');
+            $codePrefix = (isset($data['body']['product_code'])? $data['body']['product_code'] : $productPrefix.'-');
             $code       = "1000001";
             $productCode=$codePrefix.$code;
         }else{
             $prdCode     = $lastRecord->product_code;
             $code        = substr($prdCode,4,strlen($prdCode));
             $code++;
-            $codePrefix = (isset($data['body']['product_code'])? $data['body']['product_code'] : 'PRD-');
+            $codePrefix = (isset($data['body']['product_code'])? $data['body']['product_code'] : $productPrefix.'-');
             $productCode=$codePrefix.$code;
 
         }
@@ -81,11 +83,11 @@ class bl_Product{
             }
             else{
 
-                $response0 = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_keywords','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->where('product_daily_qty','>','0')->get();
+                $response0 = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->where('product_daily_qty','>','0')->get();
             }
         }
         else{
-            $response0 = $this->_model::select('product_img','product_name','market_place','product_daily_qty','asin','seller_code','product_code','product_description','id','active','proxy_comm','product_keywords','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+            $response0 = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
                          ->find($id);
         }
 
