@@ -40,6 +40,24 @@ class ctrl_Product extends Controller
         return $response;
     }
 
+    public function showAllProduct(Request $request)
+    {
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        $requestedData           = array('reqBody'=>$data['reqBody'],'query'=>$data['queryString']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->showAllProduct($requestedData);
+        return Helper::MakeResponse('ok',$response);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

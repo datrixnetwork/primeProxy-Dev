@@ -60,7 +60,7 @@ class bl_Product{
             if($sizeOfQuery > 0){
                 $qVal1       = (isset($query['search']) ? $query['search'] : '');
                 if($qVal1 == ''){
-                    $response = $this->_model::select('product_img','product_code','product_keywords','id','active','proxy_comm','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+                    $response = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
                     ->orderBy('id', 'DESC')
                     ->Paginate($query['length']);
                 }else{
@@ -145,4 +145,9 @@ class bl_Product{
 
     }
 
+    public function showAllProduct($data){
+        $response = $this->_model::get();
+
+        return $response;
+    }
 }

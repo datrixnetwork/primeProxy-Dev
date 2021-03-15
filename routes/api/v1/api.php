@@ -33,6 +33,7 @@ Route::middleware('header.auth')->group(function(){
 
                 // v1.0 - Product group
                 Route::resource('/products','App\Http\Controllers\ctrl_Product');
+                Route::get('/product/all','App\Http\Controllers\ctrl_Product@showAllProduct');
                 Route::resource('/market/place','App\Http\Controllers\ctrl_Market');
                 Route::resource('/sellers','App\Http\Controllers\ctrl_Seller');
                 Route::resource('/orders','App\Http\Controllers\ctrl_Order');
