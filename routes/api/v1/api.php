@@ -41,7 +41,7 @@ Route::middleware('header.auth')->group(function(){
                 Route::resource('/orders/{orderId}/attachments','App\Http\Controllers\ctrl_Order_Attachment');
                 Route::resource('/users','App\Http\Controllers\ctrl_User');
                 Route::get('/users/act/count','App\Http\Controllers\ctrl_User@showUserActCounts');
-                Route::resource('status','App\Http\Controllers\ctrl_Order_Status');
+                Route::resource('/status','App\Http\Controllers\ctrl_Order_Status');
                 Route::resource('/attach/statuses','App\Http\Controllers\ctrl_Attachment_Status');
                 Route::resource('/settings','App\Http\Controllers\ctrl_Setting');
                 Route::resource('/notification','App\Http\Controllers\ctrl_Notification');
@@ -59,6 +59,7 @@ Route::middleware('header.auth')->group(function(){
             Route::get('/market/place','App\Http\Controllers\ctrl_Market@index');
             Route::get('/orders/status/counts','App\Http\Controllers\ctrl_Order@showOrdersCountUser');
             Route::get('proxy/dashboard','App\Http\Controllers\ctrl_Order@showOrderCommission');
+            Route::resource('/notification','App\Http\Controllers\ctrl_Notification');
         });
 
     });
