@@ -45,6 +45,9 @@ Route::middleware('header.auth')->group(function(){
                 Route::resource('/attach/statuses','App\Http\Controllers\ctrl_Attachment_Status');
                 Route::resource('/settings','App\Http\Controllers\ctrl_Setting');
                 Route::resource('/notification','App\Http\Controllers\ctrl_Notification');
+                Route::post('/setting/payment/gateway','App\Http\Controllers\ctrl_Payment_Gateway@store');
+                Route::put('/setting/email/{category}','App\Http\Controllers\ctrl_EmailContent@update');
+                Route::get('/setting/email','App\Http\Controllers\ctrl_EmailContent@index');
 
             });
 
@@ -63,7 +66,7 @@ Route::middleware('header.auth')->group(function(){
         });
 
     });
-    Route::resource('/setting/payment/gateway','App\Http\Controllers\ctrl_Payment_Gateway');
+    Route::get('/setting/payment/gateway','App\Http\Controllers\ctrl_Payment_Gateway@index');
 
 });
 

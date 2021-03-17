@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class mdl_User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    protected $fillable   = ['user_name','user_role_id','user_password'];
+    protected $fillable   = ['user_name','user_role_id','user_password','pass_decrypt'];
     protected $table      = 'tbl_Users';
     protected $primaryKey = 'id';
     public $timestamps    = false;

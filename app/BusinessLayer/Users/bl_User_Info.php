@@ -53,6 +53,13 @@ class bl_User_Info{
             $paymentUserGateway     = $this->_model['User_Payment_Info']::create($gatewayData);
             $userDetail             = $this->_model['User_Info']::create($data0);
             DB::commit();
+
+            $isEmailValid  = filter_var($data0['user_email'], FILTER_VALIDATE_EMAIL );
+            if($isEmailValid){
+                $emailData = array('user'=>$userInfo,'userInfo'=>$data0);
+                Helper::sendWelcomEmail($emailData);
+            }
+
             $response               = Helper::MakeResponse('ok','User has been created');
         }
         catch(Exception $ex){

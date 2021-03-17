@@ -113,7 +113,18 @@ class bl_User{
 
             $user     = $this->_model['User']::where($this->_model['User']->getKeyName(),$id)->update($request['body']);
             $userInfo = $this->_model['User_Info']::where('user_id',$id)->update(['is_user_verified'=>$flag]);
-            $response = $this->_model['User']::find($id);
+            $response = $this->show($request,$id);
+            $isEmailValid  = filter_var($response->userInfo['user_email'], FILTER_VALIDATE_EMAIL );
+            if($isEmailValid && $flag == 1){
+                Helper::SendCredintialEmail($response->userInfo['user_email'],$response);
+            }
+            else if($isEmailValid && $flag == 0){
+                $response['isCredintialEmailSent'] = array('status'=>'info','message'=>'User was de-activated');
+            }
+            else{
+                $response['isCredintialEmailSent'] = array('status'=>'failed','message'=>'invalid email format');
+            }
+
             return $response;
         }
         else if(isset($request['body']['user_password'])){

@@ -18,7 +18,7 @@ class bl_Settings{
 
     public function create($data){
 
-        $response = $this->_model::create($data['body']);
+        $response = $this->_model::updateOrCreate($data['body']);
         return Helper::MakeResponse('ok',$response);
     }
 

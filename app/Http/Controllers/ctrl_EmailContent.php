@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
 
-class ctrl_Payment_Gateway extends Controller
+class ctrl_EmailContent extends Controller
 {
 
     private $_bl;                                 //Buisness Layer Name
-    private $_layer         = 'bl_PaymentGateway';      //Buisness Layer Name
+    private $_layer         = 'bl_EmailContent';      //Buisness Layer Name
     private $_buisness      = 'Setting';        //Buisness Layer folder name
-    private $_model         = 'Payment_Gateway';       //Model Name
+    private $_model         = 'Email_Content';       //Model Name
 
     public function __construct(){
         $this->_bl     = $this->_buisness."\\".$this->_layer;
@@ -160,3 +160,4 @@ class ctrl_Payment_Gateway extends Controller
 
     }
 }
+

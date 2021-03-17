@@ -59,15 +59,33 @@ class bl_Product{
 
             if($sizeOfQuery > 0){
                 $qVal1       = (isset($query['search']) ? $query['search'] : '');
+                $isBlock     = (isset($query['otherParam']['isBlock']) ? $query['otherParam']['isBlock'] : '');
+
                 if($qVal1 == ''){
-                    $response = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','seller_code','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
-                    ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
+                    if($isBlock == ''){
+                        $response = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','seller_code','is_block','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+                        ->orderBy('id', 'DESC')
+                        ->Paginate($query['length']);
+                    }else{
+                        $response = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','seller_code','is_block','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+                        ->where('is_block', $isBlock)
+                        ->orderBy('id', 'DESC')
+                        ->Paginate($query['length']);
+                    }
+
                 }else{
-                    $response = $this->_model::select('product_img','product_code','id','product_keywords','active','proxy_comm','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
-                    ->where('product_code','like',"%$qVal1%")
-                    ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
+                    if($isBlock == ''){
+                        $response = $this->_model::select('product_img','product_code','id','product_keywords','active','proxy_comm','product_price','is_block','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+                        ->where('product_code','like',"%$qVal1%")
+                        ->orderBy('id', 'DESC')
+                        ->Paginate($query['length']);
+                    }else{
+                        $response = $this->_model::select('product_img','product_code','id','product_keywords','active','proxy_comm','product_price','is_block','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+                        ->where('is_block','=',$isBlock)
+                        ->orderBy('id', 'DESC')
+                        ->Paginate($query['length']);
+                    }
+
                 }
 
                 $perPage = $response->perPage();
@@ -84,11 +102,11 @@ class bl_Product{
             }
             else{
 
-                $response0 = $this->_model::select('product_img','seller_code','product_code','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->where('product_daily_qty','>','0')->get();
+                $response0 = $this->_model::select('product_img','seller_code','product_code','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->where('product_daily_qty','>','0')->get();
             }
         }
         else{
-            $response0 = $this->_model::select('product_img','seller_code','product_code','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+            $response0 = $this->_model::select('product_img','seller_code','product_code','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
                          ->find($id);
         }
 

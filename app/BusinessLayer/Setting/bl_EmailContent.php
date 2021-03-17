@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use App\Helpers\Helper;
 use Exception;
 
-class bl_PaymentGateway{
+class bl_EmailContent{
 
     private $config          = false;
     private $_model          = false;
@@ -28,7 +28,7 @@ class bl_PaymentGateway{
 
         if(!$id){
             if(isset($data['query']['otherParam']['category']) && $data['query']['otherParam']['category'] != ''){
-                $response = $this->_model::where('category',$data['query']['otherParam']['category'])->get();
+                $response = $this->_model::where('email_name',$data['query']['otherParam']['category'])->get()->first();
             }
             else{
                 $response = $this->_model::get();
@@ -54,11 +54,8 @@ class bl_PaymentGateway{
     }
 
     public function update($request,$id){
-        if(!is_numeric($id)){
-            throw new Exception("Id Is not numeric", 404);
-        }
-        $this->_model::where('id', $id)->update($request['body']);
-        $response = $this->_model::find($id);
+        $this->_model::where('email_name', $id)->update($request['body']);
+        $response = $this->_model::where('email_name',$id);
         return Helper::MakeResponse('ok',$response);
 
     }

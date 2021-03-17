@@ -4,6 +4,7 @@ namespace App\Helpers;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Models\mdl_Notification as notifcation;
+use Mail;
 
 class Helper{
 
@@ -175,16 +176,83 @@ class Helper{
         // if(isset($queryParam['is_login']) || isset($queryParam['is_verified'])){
             $isLogin    = (isset($queryParam['is_login']) ? $queryParam['is_login'] : '');
             $isVerified = (isset($queryParam['is_verified']) ? $queryParam['is_verified'] : '');
+            $accountCategory= (isset($queryParam['category']) ? $queryParam['category'] : '');
+            $isBlock= (isset($queryParam['is_block']) ? $queryParam['is_block'] : '');
 
-            $query['otherParam'] = array('is_login'=>$isLogin,'is_verified'=>$isVerified);
+            $query['otherParam'] = array('is_login'=>$isLogin,'is_verified'=>$isVerified,'category'=>$accountCategory,'isBlock'=>$isBlock);
         // }
 
         // if(isset($queryParam['search'])){
 
-        //     $query['order_no'] = (isset($queryParam['search']['orderNo']) ? $queryParam['search']['orderNo'] : false );
+            //     $query['order_no'] = (isset($queryParam['search']['orderNo']) ? $queryParam['search']['orderNo'] : false );
         //     $query['product_code'] = (isset($queryParam['search']['productCode']) ? $queryParam['search']['productCode'] : false );
 
         // }
         return $query;
+    }
+
+    public static function SendCredintialEmail($sentTo,$bodyRequest){
+        $companyModel = SELF::LoadMdl('Company');
+        $emailModel   = SELF::LoadMdl('Email_Content');
+        $company      = $companyModel::get()->first();
+        $emailContent = $emailModel::where('email_name','credintials')->get()->first();
+
+        $firstName    = $bodyRequest->userInfo['first_name'];
+        $sentTo       = $bodyRequest->userInfo['user_email'];
+        $passDecrypt  = $bodyRequest['pass_decrypt'];
+        $user_name    = $bodyRequest['user_name'];
+        $companyName  = $company['company_name'];
+        $companyPhone = $company['company_phone'];
+        $companyEmail = $company['company_email'];
+        $emailSubject = $emailContent['email_subject'];
+        $emailContent = $emailContent['email_content'];
+
+        $emailContent = str_replace("[[name]]",$firstName,$emailContent);
+        $emailContent = str_replace("[[password]]",$passDecrypt,$emailContent);
+        $emailContent = str_replace("[[userName]]",$user_name,$emailContent);
+        $emailContent = str_replace("[[companyName]]",$companyName,$emailContent);
+        $emailContent = str_replace("[[companyPhone]]",$companyPhone,$emailContent);
+        $emailContent = str_replace("[[companyEmail]]",$companyEmail,$emailContent);
+
+        $data = array('name'=>$firstName,'pass'=>$passDecrypt,'userName'=>$user_name,'companyName'=>$companyName,'companyPhone'=>$companyPhone,'companyEmail'=>$companyEmail,'emailContent'=>$emailContent);
+
+        Mail::send(['html'=>'credintial-mail'], $data, function($message) use($sentTo,$firstName,$companyEmail,$companyName,$emailSubject) {
+           $message->to($sentTo, $firstName)->subject($emailSubject);
+           $message->from($companyEmail,$companyName);
+        });
+
+    }
+
+    public static function sendWelcomEmail($bodyRequest){
+        $companyModel = SELF::LoadMdl('Company');
+        $emailModel   = SELF::LoadMdl('Email_Content');
+        $company      = $companyModel::get()->first();
+        $emailContent = $emailModel::where('email_name','credintials')->get()->first();
+
+
+        $firstName   = $bodyRequest['userInfo']['first_name'];
+        $sentTo      = $bodyRequest['userInfo']['user_email'];
+        $userPhone   = $bodyRequest['userInfo']['user_phone'];
+        $passDecrypt = $bodyRequest['user']['pass_decrypt'];
+        $user_name   = $bodyRequest['user']['user_name'];
+        $companyName = $company['company_name'];
+        $companyPhone= $company['company_phone'];
+        $companyEmail= $company['company_email'];
+        $emailSubject = $emailContent['email_subject'];
+        $emailContent = $emailContent['email_content'];
+
+        $emailContent = str_replace("[[name]]",$firstName,$emailContent);
+        $emailContent = str_replace("[[password]]",$passDecrypt,$emailContent);
+        $emailContent = str_replace("[[userName]]",$user_name,$emailContent);
+        $emailContent = str_replace("[[companyName]]",$companyName,$emailContent);
+        $emailContent = str_replace("[[companyPhone]]",$companyPhone,$emailContent);
+        $emailContent = str_replace("[[companyEmail]]",$companyEmail,$emailContent);
+
+        $data = array('name'=>$firstName,'pass'=>$passDecrypt,'userName'=>$user_name,'userPhone'=>$userPhone,'companyName'=>$companyName,'companyPhone'=>$companyPhone,'companyEmail'=>$companyEmail,'emailContent'=>$emailContent);
+
+        Mail::send(['html'=>'welcom-mail'], $data, function($message) use($sentTo,$firstName,$companyEmail,$companyName,$emailSubject){
+           $message->to($sentTo, $firstName)->subject($emailSubject);
+           $message->from($companyEmail,$companyName);
+        });
     }
 }
