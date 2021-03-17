@@ -227,7 +227,7 @@ class Helper{
         $companyModel = SELF::LoadMdl('Company');
         $emailModel   = SELF::LoadMdl('Email_Content');
         $company      = $companyModel::get()->first();
-        $emailContent = $emailModel::where('email_name','credintials')->get()->first();
+        $emailContent = $emailModel::where('email_name','welcome')->get()->first();
 
 
         $firstName   = $bodyRequest['userInfo']['first_name'];
