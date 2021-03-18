@@ -99,9 +99,10 @@ class bl_Order{
                     ->with('status')
                     ->with('orderAttachment')
                     ->with('proxyUser')
-                    ->where('created_by',$createdByFilter)
+                    ->where('created_by',1)
                     ->orderBy('id', 'DESC')
                     ->Paginate($query['length']);
+
                 }
                 else{
                     $response = $this->_model['Order']::select('order_no','is_order_verified','is_comm_paid','store_order_no','id','active','status_code','seller_code','sold_by',DB::raw("concat('$orderImgUrl','/',order_no) AS imgPath"))

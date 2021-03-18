@@ -126,4 +126,22 @@ class ctrl_User_Info extends Controller
     {
         //
     }
+
+    public function checkEmailValid(Request $request){
+
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request,true);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+        $requestedData           = array('reqBody'=>$data['reqBody'],'query'=>$data['queryString']);
+
+        //Load BL Function
+        $response                = $buisnessLayer->checkEmailValid($requestedData);
+        return Helper::MakeResponse('ok',$response);
+    }
 }

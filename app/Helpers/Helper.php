@@ -192,6 +192,7 @@ class Helper{
     }
 
     public static function SendCredintialEmail($sentTo,$bodyRequest){
+
         $companyModel = SELF::LoadMdl('Company');
         $emailModel   = SELF::LoadMdl('Email_Content');
         $company      = $companyModel::get()->first();
@@ -199,6 +200,7 @@ class Helper{
 
         $firstName    = $bodyRequest->userInfo['first_name'];
         $sentTo       = $bodyRequest->userInfo['user_email'];
+        $userPhone    = $bodyRequest->userInfo['user_phone'];
         $passDecrypt  = $bodyRequest['pass_decrypt'];
         $user_name    = $bodyRequest['user_name'];
         $companyName  = $company['company_name'];
@@ -210,10 +212,11 @@ class Helper{
         $emailContent = str_replace("[[name]]",$firstName,$emailContent);
         $emailContent = str_replace("[[password]]",$passDecrypt,$emailContent);
         $emailContent = str_replace("[[userName]]",$user_name,$emailContent);
+        $emailContent = str_replace("[[userPhone]]",$userPhone,$emailContent);
         $emailContent = str_replace("[[companyName]]",$companyName,$emailContent);
         $emailContent = str_replace("[[companyPhone]]",$companyPhone,$emailContent);
         $emailContent = str_replace("[[companyEmail]]",$companyEmail,$emailContent);
-
+        
         $data = array('name'=>$firstName,'pass'=>$passDecrypt,'userName'=>$user_name,'companyName'=>$companyName,'companyPhone'=>$companyPhone,'companyEmail'=>$companyEmail,'emailContent'=>$emailContent);
 
         Mail::send(['html'=>'credintial-mail'], $data, function($message) use($sentTo,$firstName,$companyEmail,$companyName,$emailSubject) {
@@ -233,6 +236,7 @@ class Helper{
         $firstName   = $bodyRequest['userInfo']['first_name'];
         $sentTo      = $bodyRequest['userInfo']['user_email'];
         $userPhone   = $bodyRequest['userInfo']['user_phone'];
+        $userPhone   = $bodyRequest->userInfo['user_phone'];
         $passDecrypt = $bodyRequest['user']['pass_decrypt'];
         $user_name   = $bodyRequest['user']['user_name'];
         $companyName = $company['company_name'];
@@ -244,6 +248,7 @@ class Helper{
         $emailContent = str_replace("[[name]]",$firstName,$emailContent);
         $emailContent = str_replace("[[password]]",$passDecrypt,$emailContent);
         $emailContent = str_replace("[[userName]]",$user_name,$emailContent);
+        $emailContent = str_replace("[[userPhone]]",$userPhone,$emailContent);
         $emailContent = str_replace("[[companyName]]",$companyName,$emailContent);
         $emailContent = str_replace("[[companyPhone]]",$companyPhone,$emailContent);
         $emailContent = str_replace("[[companyEmail]]",$companyEmail,$emailContent);

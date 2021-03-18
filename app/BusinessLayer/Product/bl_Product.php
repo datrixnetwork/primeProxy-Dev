@@ -102,11 +102,11 @@ class bl_Product{
             }
             else{
 
-                $response0 = $this->_model::select('product_img','seller_code','product_code','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->where('product_daily_qty','>','0')->get();
+                $response0 = $this->_model::select('product_img','product_name','seller_code','product_code','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->where('product_daily_qty','>','0')->where('is_block',0)->get();
             }
         }
         else{
-            $response0 = $this->_model::select('product_img','seller_code','product_code','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+            $response0 = $this->_model::select('product_img','asin','product_name','seller_code','product_code','product_description','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
                          ->find($id);
         }
 
