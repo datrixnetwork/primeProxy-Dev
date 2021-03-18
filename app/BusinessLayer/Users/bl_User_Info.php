@@ -43,9 +43,10 @@ class bl_User_Info{
             $data0['user_id']       = $userInfo['id'];
 
             $notificationRequest    = array('event_type'=>1,'event_name'=>'Signup'
-            ,'event_description'=>'New Signup has been created, Click here to view details'
+            ,'event_description'=>'New Signup has been created.'
             ,'event_link'=>'user-view.html?id='.$userInfo['id']
             ,'notify_to'=>1
+            ,'event_log'=>'userNotification.png'
             ,'notify_from'=>$userInfo['id']);
 
             Helper::postNotification($notificationRequest);

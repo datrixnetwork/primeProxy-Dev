@@ -37,7 +37,7 @@ class ctrl_Seller extends Controller
 
         //Load BL Function
         $response                = $buisnessLayer->show($requestedData);
-        return $response;
+        return Helper::MakeResponse('ok',$response);
     }
 
     /**
@@ -92,9 +92,11 @@ class ctrl_Seller extends Controller
         //Load BL with models
         $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
 
+        $requestedData           = array('reqBody'=>$data['reqBody'],'query'=>$data['queryString']);
+
         //Load BL Function
-        $response                = $buisnessLayer->show($data,$id);
-        return $response;
+        $response                = $buisnessLayer->show($requestedData,$id);
+        return Helper::MakeResponse('ok',$response);
     }
 
     /**
@@ -158,4 +160,23 @@ class ctrl_Seller extends Controller
         return $response;
 
     }
+
+    public function downloadfile(Request $request)
+    {
+
+        $file = "exports/".urldecode($request->file_name);
+
+        if (((!is_null($request->file_name)) || (!empty($request->file_name))) && (File::exists($file))) {
+            $headers = array(
+                'Content-Type: application/vnd.ms-excel',
+            );
+
+            if (File::isFile($file)) {
+                $file = File::get($file);
+
+                return response()->download( $file, "product-list.csv", $headers);
+            }
+        }
+}
+
 }

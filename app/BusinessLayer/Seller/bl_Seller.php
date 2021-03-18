@@ -50,15 +50,23 @@ class bl_Seller{
             }
             else{
 
-                DB::connection()->enableQueryLog();
-
-                // $response0     = $this->_model::select('product_img','product_code','id','proxy_comm','product_qty',DB::raw("'$productImgUrl' AS imgPath"))->get();
                 $response      = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_qty',DB::raw("'$productImgUrl' AS imgPath"))->skip($query['start'])->take($query['length'])->get();
-                $queries = DB::getQueryLog();
             }
+            $perPage = $response->perPage();
+            $total   = $response->total();
+            $response0 = array(
+                "draw" => intval($query['draw']),
+                "iTotalRecords" => (int)$response->perPage(),
+                "iTotalDisplayRecords" => (int)$response->total(),
+                'aaData'=>$response->items()
+            );
+            $data0 = array($response,$response0);
+
+            return $response0;
+
         }
         else{
-            $response = $this->_model::find($id);
+            return $response = $this->_model::find($id);
         }
 
         if(blank($response)){
@@ -67,22 +75,6 @@ class bl_Seller{
             return Helper::MakeResponse('error',$response);
         }
 
-        $perPage = $response->perPage();
-        $total   = $response->total();
-
-        // dd($response->perPage());
-        // echo "<pre>";
-        // print_r($response);
-        // echo "</pre>";
-        $response0 = array(
-            "draw" => intval($query['draw']),
-            "iTotalRecords" => (int)$response->perPage(),
-            "iTotalDisplayRecords" => (int)$response->total(),
-            'aaData'=>$response->items()
-        );
-        $data0 = array($response,$response0);
-
-        return $response0;
     }
 
 
