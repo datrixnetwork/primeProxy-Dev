@@ -46,7 +46,7 @@ class bl_User_Info{
             ,'event_description'=>'New Signup has been created.'
             ,'event_link'=>'user-view.html?id='.$userInfo['id']
             ,'notify_to'=>1
-            ,'event_log'=>'userNotification.png'
+            ,'event_logo'=>'userNotification.png'
             ,'notify_from'=>$userInfo['id']);
 
             Helper::postNotification($notificationRequest);
