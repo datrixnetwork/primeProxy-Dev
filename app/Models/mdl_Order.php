@@ -30,7 +30,7 @@ class mdl_Order extends Model
 
     public function proxyUser()
     {
-        return $this->hasMany(mdl_User_Info::class,'user_id','created_by');
+        return $this->hasOne(mdl_User_Info::class,'user_id','created_by');
     }
 
     public function product()

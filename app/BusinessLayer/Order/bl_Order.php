@@ -62,72 +62,43 @@ class bl_Order{
         if(!$id){
 
             if($sizeOfQuery > 0){
-                $qVal1          = (isset($query['search']) ? $query['search'] : '');
-                $statusFilter   = (isset($query['status_code']) ? $query['status_code'] : '');
-                $productFilter  = (isset($query['product_id']) ? $query['product_id'] : '');
-                $createdByFilter= (isset($query['created_by']) ? $query['created_by'] : '');
+                $searchVal      = (isset($query['search']) ? $query['search'] : '');
+                $filter         = (isset($query['filter']) ? $query['filter'] : '');
 
-                if($qVal1 == '' && $statusFilter =='' && $productFilter==''&& $createdByFilter==''){
+                $sql = $this->_model['Order']->newQuery();
 
-                    $response = $this->_model['Order']::select('order_no','is_order_verified','is_comm_paid','store_order_no','id','active','status_code','seller_code','sold_by',DB::raw("concat('$orderImgUrl','/',order_no) AS imgPath"))
-                    ->with('status')
-                    ->with('orderAttachment')
-                    ->with('proxyUser')
-                    ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
+                if($searchVal != ''){
+                    $sql->orWhere('order_no','like',"%$searchVal%");
+                    $sql->orWhere('buyer_email','like',"%$searchVal%");
+                    $sql->orWhere('buyer_name','like',"%$searchVal%");
+                    $sql->orWhere('store_order_no','like',"%$searchVal%");
                 }
-                else if($statusFilter !='' && $qVal1 == '' && $productFilter=='' && $createdByFilter==''){
-                    $response = $this->_model['Order']::select('order_no','is_order_verified','is_comm_paid','store_order_no','id','active','status_code','seller_code','sold_by',DB::raw("concat('$orderImgUrl','/',order_no) AS imgPath"))
-                    ->with('status')
-                    ->with('orderAttachment')
-                    ->with('proxyUser')
-                    ->where('status_code',$statusFilter)
-                    ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
+                $sql->with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser');
+                if($filter != ''){
+                    $sql->where($filter);
                 }
-                else if($statusFilter =='' && $qVal1 == '' && $productFilter!='' && $createdByFilter==''){
-                    $response = $this->_model['Order']::select('order_no','is_order_verified','is_comm_paid','store_order_no','id','active','status_code','seller_code','sold_by',DB::raw("concat('$orderImgUrl','/',order_no) AS imgPath"))
-                    ->with('status')
-                    ->with('orderAttachment')
-                    ->with('proxyUser')
-                    ->where('product_id',$productFilter)
-                    ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
-                }
-                else if ($statusFilter =='' && $qVal1 == '' && $productFilter==''  && $createdByFilter!=''){
-                    $response = $this->_model['Order']::select('order_no','is_order_verified','is_comm_paid','store_order_no','id','active','status_code','seller_code','sold_by',DB::raw("concat('$orderImgUrl','/',order_no) AS imgPath"))
-                    ->with('status')
-                    ->with('orderAttachment')
-                    ->with('proxyUser')
-                    ->where('created_by',1)
-                    ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
+                $response = $sql->orderBy('id', 'DESC')->Paginate($query['length']);
+                $perPage = $response->perPage();
+                $total   = $response->total();
 
-                }
-                else{
-                    $response = $this->_model['Order']::select('order_no','is_order_verified','is_comm_paid','store_order_no','id','active','status_code','seller_code','sold_by',DB::raw("concat('$orderImgUrl','/',order_no) AS imgPath"))
-                    ->with('status')
-                    ->with('orderAttachment')
-                    ->with('proxyUser')
-                    ->where('order_no','like',"%$qVal1%")
-                    ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
-                }
-
+                $response0 = array(
+                    "draw" => intval($query['draw']),
+                    "iTotalRecords" => (int)$response->perPage(),
+                    "iTotalDisplayRecords" => (int)$response->total(),
+                    'aaData'=>$response->items()
+                );
+                return $response0;
             }
             else{
-                // $response0     = $this->_model::select('product_img','product_code','id','proxy_comm','product_qty',DB::raw("'$productImgUrl' AS imgPath"))->get();
-                $response      = $this->_model['Order']::select('order_no','is_order_verified','is_comm_paid','store_order_no','id','active','status_code','seller_code','sold_by',DB::raw("concat('$orderImgUrl','/',order_no) AS imgPath"))
-                                ->with('status',function($query){
-                                    return $query;
-                                })
-                                ->skip(0)->take(10)->get();
-                }
+                $sql = $this->_model['Order']->newQuery();
+                $sql->with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser');
+                $response = $sql->orderBy('id', 'DESC')->get();
+            }
         }
-        else{
-
-            $orderData = DB::select("SELECT o.order_no,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name,'',usin.first_name) AS userP,
-                                    o.is_comm_paid,o.store_order_no,o.sold_by,os.name,o.buyer_name,o.buyer_email,
+            else
+            {
+                $orderData = DB::select("SELECT o.order_no,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name,'',usin.first_name) AS userP,
+                    o.is_comm_paid,o.store_order_no,o.sold_by,os.name,o.buyer_name,o.buyer_email,
                                     o.order_description,o.is_comm_paid,o.is_order_verified
                                     FROM tbl_Orders o , tbl_Order_Status os,tbl_Products prd,tbl_Users_Info usin WHERE prd.id = o.product_id AND usin.user_id = o.created_by AND o.status_code = os.id AND o.id =$id;");
 
@@ -141,21 +112,6 @@ class bl_Order{
             return $response;
         }
 
-
-        $perPage = $response->perPage();
-        $total   = $response->total();
-
-        // dd($response->perPage());
-        // echo "<pre>";
-        // print_r($response);
-        // echo "</pre>";
-        $response0 = array(
-            "draw" => intval($query['draw']),
-            "iTotalRecords" => (int)$response->perPage(),
-            "iTotalDisplayRecords" => (int)$response->total(),
-            'aaData'=>$response->items()
-        );
-        return $response0;
     }
 
 

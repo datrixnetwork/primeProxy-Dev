@@ -173,6 +173,11 @@ class Helper{
         if(isset($queryParam['notify_to'])){
             $query['notify_to'] = $queryParam['notify_to'];
         }
+
+        if(isset($queryParam['filter'])){
+            $query['filter'] = $queryParam['filter'];
+        }
+
         // if(isset($queryParam['is_login']) || isset($queryParam['is_verified'])){
             $isLogin    = (isset($queryParam['is_login']) ? $queryParam['is_login'] : '');
             $isVerified = (isset($queryParam['is_verified']) ? $queryParam['is_verified'] : '');
@@ -216,7 +221,7 @@ class Helper{
         $emailContent = str_replace("[[companyName]]",$companyName,$emailContent);
         $emailContent = str_replace("[[companyPhone]]",$companyPhone,$emailContent);
         $emailContent = str_replace("[[companyEmail]]",$companyEmail,$emailContent);
-        
+
         $data = array('name'=>$firstName,'pass'=>$passDecrypt,'userName'=>$user_name,'companyName'=>$companyName,'companyPhone'=>$companyPhone,'companyEmail'=>$companyEmail,'emailContent'=>$emailContent);
 
         Mail::send(['html'=>'credintial-mail'], $data, function($message) use($sentTo,$firstName,$companyEmail,$companyName,$emailSubject) {

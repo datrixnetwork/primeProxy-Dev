@@ -69,9 +69,12 @@ Route::middleware('header.auth')->group(function(){
     Route::get('/setting/payment/gateway','App\Http\Controllers\ctrl_Payment_Gateway@index');
     Route::get('/checkEmail','App\Http\Controllers\ctrl_User_Info@checkEmailValid');
 
-    Route::get('AfasDfqwDAFQdasFQWeqwDasgfWEGREYTjSDFqwdas/{id}','App\Http\Controllers\ctrl_SellerSheet@index');
+   // Route::get('AfasDfqwDAFQdasFQWeqwDasgfWEGREYTjSDFqwdas/{id}','App\Http\Controllers\ctrl_SellerSheet@index');
+    Route::get('orderSheet/{id}','App\Http\Controllers\ctrl_SellerSheet@show');
 });
-
+Route::get("/AfasDfqwDAFQdasFQWeqwDasgfWEGREYTjSDFqwdas/{id}", function($id){
+    return redirect('AfasDfqwDAFQdasFQWeqwDasgfWEGREYTjSDFqwdas/'.$id);
+ });
 
 Route::get('unautherization',function(){
     return response()->json(array('status'=>'failed','code'=>'401','message'=>'Unauthorized user'));

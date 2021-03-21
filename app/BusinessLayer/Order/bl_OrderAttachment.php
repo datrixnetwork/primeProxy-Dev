@@ -40,7 +40,7 @@ class bl_OrderAttachment{
         $data['reqBody']['attachment'] = $newFileName;
         $data['reqBody']['created_by'] = $userId;
 
-        $response = $this->_model::create($data['reqBody']);
+        $response = $this->_model::updateOrCreate($data['reqBody']);
         return Helper::MakeResponse('ok',$response);
     }
 

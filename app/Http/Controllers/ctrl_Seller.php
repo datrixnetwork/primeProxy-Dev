@@ -37,7 +37,7 @@ class ctrl_Seller extends Controller
 
         //Load BL Function
         $response                = $buisnessLayer->show($requestedData);
-        return Helper::MakeResponse('ok',$response);
+        return $response;
     }
 
     /**

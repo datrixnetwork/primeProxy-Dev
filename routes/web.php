@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get("/AfasDfqwDAFQdasFQWeqwDasgfWEGREYTjSDFqwdas/{id}", function($id){
+    return view('sharedList')->withTitle($id);
+ });
+
 Route::get('/', function () {
     return view('welcome');
 });
