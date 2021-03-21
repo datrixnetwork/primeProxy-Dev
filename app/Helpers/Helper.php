@@ -241,7 +241,7 @@ class Helper{
         $firstName   = $bodyRequest['userInfo']['first_name'];
         $sentTo      = $bodyRequest['userInfo']['user_email'];
         $userPhone   = $bodyRequest['userInfo']['user_phone'];
-        $userPhone   = $bodyRequest->userInfo['user_phone'];
+        $userPhone   = $bodyRequest['userInfo']['user_phone'];
         $passDecrypt = $bodyRequest['user']['pass_decrypt'];
         $user_name   = $bodyRequest['user']['user_name'];
         $companyName = $company['company_name'];
