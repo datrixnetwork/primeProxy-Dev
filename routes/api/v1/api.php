@@ -33,6 +33,7 @@ Route::middleware('header.auth')->group(function(){
 
                 // v1.0 - Product group
                 Route::resource('/products','App\Http\Controllers\ctrl_Product');
+                Route::resource('/comment','App\Http\Controllers\ctrl_Comment');
                 Route::get('/product/all','App\Http\Controllers\ctrl_Product@showAllProduct');
                 Route::resource('/market/place','App\Http\Controllers\ctrl_Market');
                 Route::resource('/sellers','App\Http\Controllers\ctrl_Seller');
@@ -56,6 +57,7 @@ Route::middleware('header.auth')->group(function(){
         Route::prefix('/proxy')->group(function(){
             Route::resource('/products','App\Http\Controllers\ctrl_Product');
             Route::resource('/orders','App\Http\Controllers\ctrl_Order');
+            Route::resource('/comment','App\Http\Controllers\ctrl_Comment');
             Route::resource('status','App\Http\Controllers\ctrl_Order_Status');
             Route::resource('/attach/statuses','App\Http\Controllers\ctrl_Attachment_Status');
             Route::resource('/orders/{orderId}/attachments','App\Http\Controllers\ctrl_Order_Attachment');

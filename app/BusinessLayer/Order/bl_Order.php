@@ -97,9 +97,9 @@ class bl_Order{
         }
             else
             {
-                $orderData = DB::select("SELECT o.order_no,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name,'',usin.first_name) AS userP,
+                $orderData = DB::select("SELECT o.order_no,is_order_rejected,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name,'',usin.first_name) AS userP,
                     o.is_comm_paid,o.store_order_no,o.sold_by,os.name,o.buyer_name,o.buyer_email,
-                                    o.order_description,o.is_comm_paid,o.is_order_verified
+                                    o.order_description,o.is_order_verified
                                     FROM tbl_Orders o , tbl_Order_Status os,tbl_Products prd,tbl_Users_Info usin WHERE prd.id = o.product_id AND usin.user_id = o.created_by AND o.status_code = os.id AND o.id =$id;");
 
             $attachmentData = DB::select("SELECT ot.attachment_note,ot.attachment,ast.name,'$orderImgUrl' as imgPath,CONCAT(usin.first_name,' ',usin.first_name) AS userP,ot.created_on
