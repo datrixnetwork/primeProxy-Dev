@@ -44,10 +44,12 @@ class bl_Comment{
 
 
     public function show($data,$id=false){
-        $data['reqBody'] = array_filter($data['reqBody']);
+
         if(!$id){
+            $order_id = array_filter($data['reqBody']['order_id']);
+
             $sql      = $this->_model->newQuery();
-            $sql->where($data['reqBody']);
+            $sql->where('order_id',$order_id);
 
             $response = $sql->get();
             return $response;
