@@ -44,7 +44,7 @@ class bl_Comment{
 
 
     public function show($data,$id=false){
-
+        $data['reqBody'] = array_filter($data['reqBody']);
         if(!$id){
             $sql      = $this->_model->newQuery();
             $sql->where($data['reqBody']);
