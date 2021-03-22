@@ -47,6 +47,8 @@ class bl_Comment{
 
         if(!$id){
             $sql      = $this->_model->newQuery();
+            $sql->where($data['reqBody']);
+
             $response = $sql->get();
             return $response;
         }
