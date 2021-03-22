@@ -46,7 +46,7 @@ class bl_Comment{
     public function show($data,$id=false){
 
         if(!$id){
-            $order_id = array_filter($data['reqBody']['order_id']);
+            $order_id = $data['reqBody']['order_id'];
 
             $sql      = $this->_model->newQuery();
             $sql->where('order_id',$order_id);
