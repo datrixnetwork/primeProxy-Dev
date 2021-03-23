@@ -117,7 +117,7 @@ class ctrl_Comment extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $orderId)
     {
         //MA - Set Client info and request body data
         $data = Helper::manageRequestData($request,true);
@@ -131,7 +131,7 @@ class ctrl_Comment extends Controller
         $requestedData           = array('body'=>$data['reqBody']);
 
         //Load BL Function
-        $response                = $buisnessLayer->update($requestedData,$id);
+        $response                = $buisnessLayer->update($requestedData,$orderId);
         return $response;
 
 

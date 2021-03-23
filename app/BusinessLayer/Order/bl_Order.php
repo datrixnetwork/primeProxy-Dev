@@ -97,12 +97,12 @@ class bl_Order{
         }
             else
             {
-                $orderData = DB::select("SELECT o.order_no,is_order_rejected,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name,' ',usin.last_name) AS userP,o.created_on,
+                $orderData = DB::select("SELECT o.id,o.order_no,is_order_rejected,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name) AS userP,o.created_on,
                     o.is_comm_paid,o.status_code,o.store_order_no,o.sold_by,os.name,o.buyer_name,o.buyer_email,
                                     o.order_description,o.is_order_verified
                                     FROM tbl_Orders o , tbl_Order_Status os,tbl_Products prd,tbl_Users_Info usin WHERE prd.id = o.product_id AND usin.user_id = o.created_by AND o.status_code = os.id AND o.id =$id;");
 
-            $attachmentData = DB::select("SELECT ot.attachment_note,ot.attachment,ast.name,'$orderImgUrl' as imgPath,CONCAT(usin.first_name,' ',usin.first_name) AS userP,ot.created_on
+            $attachmentData = DB::select("SELECT ot.id,ot.attachment_note,ot.attachment,ast.name,'$orderImgUrl' as imgPath,CONCAT(usin.first_name) AS userP,ot.created_on
                                             FROM tbl_Order_Attachments ot , tbl_Attachment_Status ast ,tbl_Users_Info usin
                                             WHERE ot.status_id = ast.id
                                             AND usin.user_id = ot.created_by AND ot.order_id=$id ORDER BY ot.id DESC;");

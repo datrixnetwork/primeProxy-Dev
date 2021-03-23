@@ -78,11 +78,9 @@ class bl_Comment{
             throw new Exception("Id Is not numeric", 404);
         }
 
-       $this->_model['Order']::where('id', $id)->update($request['body']);
-
-       $response = $this->_model['Order']::find($id);
-    return $response;
-
+        $this->_model::where('order_id', $id)->update($request['body']);
+       $response = array('message'=>'Data updated');
+       return Helper::MakeResponse('ok',$response);
     }
 
     public function showCount(){

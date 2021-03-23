@@ -140,7 +140,7 @@ class ctrl_Order_Attachment extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request,$orderid,$id)
     {
 
         //MA - Set Client info and request body data
