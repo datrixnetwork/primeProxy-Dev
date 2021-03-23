@@ -14,18 +14,49 @@
   <link rel="stylesheet" href="http://207.154.197.92/prime/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="http://207.154.197.92/prime/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <link rel="stylesheet" href="http://207.154.197.92/prime/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 <style>
 .lblClass2{
     cursor: pointer;
 font-size: 15px;
 color: #827d7d;
 }
+.w3-xlarge {
+      font-size: 24px!important;
+    }
+    .w3-display-topright {
+    position: absolute;
+    right: 0;
+    top: 86px;
+}
+.w3-modal-content {
+    width: 500px;
+}
+.w3-modal {
+    z-index: 11;
+    display: none;
+    padding-top: 100px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
 </style>
 </head>
 <body>
 <div class="wrapper">
 
-
+<div id="modal01" class="w3-modal" onclick="this.style.display='none'">
+      <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
+      <div class="w3-modal-content w3-animate-zoom">
+        <img id="img01" style="width:100%">
+      </div>
+    </div>
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -162,7 +193,7 @@ color: #827d7d;
                     if(row.reviewAttachment == null){
                         var review = "No Reviews yet";
                     }else{
-                        var review = '<a href='+row.reviewAttachment+' download><img src='+row.reviewAttachment+' width=20%></a>';
+                        var review = '<img  onclick="onClick(this)"  src='+row.reviewAttachment+' width=20%>';
                     }
                     return '<center><label class="lblClass2">'+review+'</label></center>';
 				}
@@ -220,6 +251,13 @@ color: #827d7d;
     }).buttons().container().appendTo('#sellerShared_wrapper .col-md-6:eq(0)');
 
   });
+
+  function onClick(element) {
+  document.getElementById("img01").src = element.src;
+  document.getElementById("modal01").style.display = "block";
+}
+
+
 </script>
 </body>
 </html>
