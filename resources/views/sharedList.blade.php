@@ -102,7 +102,7 @@ color: #827d7d;
   $(function () {
     var sites = {!! $title !!};
     var loadInto ="sellerShared";
-      var url ='http://localhost/Datrix/dtxOms/public/api/v1/orderSheet/'+sites;
+      var url ='http://207.154.197.92/primeProxy-Dev/public/api/v1/orderSheet/'+sites;
       var formData ={};
     $("#"+loadInto).DataTable({
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
