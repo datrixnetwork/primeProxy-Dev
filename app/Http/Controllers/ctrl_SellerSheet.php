@@ -31,7 +31,7 @@ class ctrl_SellerSheet extends Controller
         FROM tbl_Orders o,tbl_Products p ,`tbl_Sellers` seller
         WHERE o.product_id = p.id
         AND p.seller_code = seller.seller_code AND seller.id=$id;");
-
+    dd($data);
         $perPage = 1000;
         $total   = 1000;
 
