@@ -66,6 +66,7 @@ Route::middleware('header.auth')->group(function(){
             Route::get('/orders/status/counts','App\Http\Controllers\ctrl_Order@showOrdersCountUser');
             Route::get('proxy/dashboard','App\Http\Controllers\ctrl_Order@showOrderCommission');
             Route::resource('/notification','App\Http\Controllers\ctrl_Notification');
+            Route::resource('/users','App\Http\Controllers\ctrl_User');
         });
 
     });

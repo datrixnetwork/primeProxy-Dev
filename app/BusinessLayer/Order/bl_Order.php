@@ -97,7 +97,7 @@ class bl_Order{
         }
             else
             {
-                $orderData = DB::select("SELECT o.id,o.order_no,is_order_rejected,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name) AS userP,o.created_on,
+                $orderData = DB::select("SELECT o.id,o.order_no,is_admin_comm_paid,is_order_rejected,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name) AS userP,o.created_on,
                     o.is_comm_paid,o.status_code,o.store_order_no,o.sold_by,os.name,o.buyer_name,o.buyer_email,
                                     o.order_description,o.is_order_verified
                                     FROM tbl_Orders o , tbl_Order_Status os,tbl_Products prd,tbl_Users_Info usin WHERE prd.id = o.product_id AND usin.user_id = o.created_by AND o.status_code = os.id AND o.id =$id;");
@@ -158,7 +158,14 @@ class bl_Order{
     public function showOrderCommissionByUser(){
         $userId       = Auth::id();
 
-        $response = DB::select("SELECT concat(COALESCE(SUM(proxy_comm),0),'$') AS comEarn FROM `tbl_Orders` WHERE created_by =$userId");
+        $response = DB::select("SELECT concat(SUM(a.commEarned),'$') AS commEarned , concat(SUM(a.commPaid),'$') AS commPaid
+        FROM
+        (
+        SELECT IF(is_comm_paid = 0,IF(status_code = 5,IF(is_order_verified=1,1,0),0),0) AS commEarned,
+               IF(is_comm_paid = 1,IF(status_code = 13,IF(is_order_verified=1,1,0),0),0) AS commPaid
+        FROM `tbl_Orders`
+        WHERE created_by =$userId
+        ) a ");
 
         return $response;
     }

@@ -227,7 +227,7 @@ color: #827d7d;
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     comPaid = 'No';
-                    if(row.is_comm_paid ==1){
+                    if(row.is_admin_comm_paid ==1){
                         comPaid = 'Yes';
                     }
                     return '<span><label class="lblClass2">'+comPaid+'</label></span>';
