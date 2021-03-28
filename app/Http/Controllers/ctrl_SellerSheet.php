@@ -25,6 +25,7 @@ class ctrl_SellerSheet extends Controller
         $orderImgUrl = $orderImgUrl['order_img_url'];
 
         $data = DB::select("SELECT p.market_place,p.product_name,o.order_no,p.product_price,o.is_admin_comm_paid,
+        (SELECT CONCAT('$orderImgUrl','',oa.attachment) FROM tbl_Order_Attachments oa WHERE o.id = oa.order_id AND oa.status_id = 1) AS orderCreated,
         (SELECT CONCAT('$orderImgUrl','',oa.attachment) FROM tbl_Order_Attachments oa WHERE o.id = oa.order_id AND oa.status_id = 2) AS reviewAttachment,
         (SELECT CONCAT('$orderImgUrl','',oa.attachment) FROM tbl_Order_Attachments oa WHERE o.id = oa.order_id AND oa.status_id = 3) AS feedbackAttachment,
         (SELECT CONCAT('$orderImgUrl','',oa.attachment) FROM tbl_Order_Attachments oa WHERE o.id = oa.order_id AND oa.status_id = 4) AS refundAttachment

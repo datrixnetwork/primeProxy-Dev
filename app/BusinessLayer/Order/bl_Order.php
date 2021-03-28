@@ -53,15 +53,18 @@ class bl_Order{
 
     public function show($data,$id=false){
 
-        $query       = $data['query'];
-        $sizeOfQuery = sizeof($query);
-        $company     = new mdl_Company();
-        $orderImgUrl = $company::select('order_img_url')->first();
-        $orderImgUrl = $orderImgUrl['order_img_url'];
+        $query            = $data['query'];
+        $removeQueryParam = 0;
+        $company          = new mdl_Company();
+        $orderImgUrl      = $company::select('order_img_url')->first();
+        $orderImgUrl      = $orderImgUrl['order_img_url'];
+        if(isset($data['reqBody']['removeLazyLoading']) && $data['reqBody']['removeLazyLoading'] == 1){
+            $removeQueryParam = 1;
+        }
 
         if(!$id){
 
-            if($sizeOfQuery > 0){
+            if($removeQueryParam == 0){
                 $searchVal      = (isset($query['search']) ? $query['search'] : '');
                 $filter         = (isset($query['filter']) ? $query['filter'] : '');
 
@@ -90,9 +93,14 @@ class bl_Order{
                 return $response0;
             }
             else{
+                $filter         = (isset($query['filter']) ? $query['filter'] : '');
                 $sql = $this->_model['Order']->newQuery();
+                if($filter != ''){
+                    $sql->where($filter);
+                }
                 $sql->with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser');
                 $response = $sql->orderBy('id', 'DESC')->get();
+                return $response;
             }
         }
             else

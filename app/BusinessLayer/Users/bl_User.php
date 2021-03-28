@@ -34,6 +34,7 @@ class bl_User{
         if(!$id){
 
             $query       = $request['query'];
+
             if(isset($request['reqBody']['active'])){
                 $activeFlag  = (isset($request['reqBody']['active']) ? $request['reqBody']['active'] : 1);
 
@@ -47,8 +48,12 @@ class bl_User{
             }
             else{
                 $query['otherParam'] = array_filter($query['otherParam']);
-                // dd($query['otherParam']);
-                if(isset($query['otherParam'])){
+                $disableLazyLoad = 0;
+                if(isset($request['reqBody']['removeLazyLoading']) && $request['reqBody']['removeLazyLoading'] == 1){
+                    $disableLazyLoad = 1;
+                }
+                if(isset($query['otherParam']) && $disableLazyLoad ==0){
+
                     $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
                     ->whereHas('userInfo')
                     ->whereHas('userAccountInfo')
@@ -57,11 +62,21 @@ class bl_User{
                     ->Paginate($query['length']);
                 }
                 else{
-                    $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
-                    ->whereHas('userInfo')
-                    ->whereHas('userAccountInfo')
-                    ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
+                    if($disableLazyLoad == 1){
+                        $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+                        ->whereHas('userInfo')
+                        ->whereHas('userAccountInfo')
+                        ->orderBy('id', 'DESC')
+                        ->get();
+                        return $response;
+                    }else{
+                        $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+                        ->whereHas('userInfo')
+                        ->whereHas('userAccountInfo')
+                        ->orderBy('id', 'DESC')
+                        ->Paginate($query['length']);
+                    }
+
                 }
 
             }

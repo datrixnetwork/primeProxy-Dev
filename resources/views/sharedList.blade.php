@@ -77,6 +77,7 @@ color: #827d7d;
                     <th>Product name</th>
                     <th>Order number</th>
                     <th>Price</th>
+                    <th>Order screenshot</th>
                     <th>Review screenshot</th>
                     <th>Feedback screenshot</th>
                     <th>Refund screenshot</th>
@@ -190,6 +191,18 @@ color: #827d7d;
 				"targets": 4,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
+                    if(row.orderCreated == null){
+                        var ordreCreated = "No Order Screen shot yet";
+                    }else{
+                        var ordreCreated = '<img  onclick="onClick(this)"  src='+row.orderCreated+' width=20%>';
+                    }
+                    return '<center><label class="lblClass2">'+ordreCreated+'</label></center>';
+				}
+			},
+			{
+				"targets": 5,
+				data: 'data',
+				"render": function ( data, type, row, meta ) {
                     if(row.reviewAttachment == null){
                         var review = "No Reviews yet";
                     }else{
@@ -199,7 +212,7 @@ color: #827d7d;
 				}
 			},
 			{
-				"targets": 5,
+				"targets": 6,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     if(row.feedbackAttachment == null){
@@ -211,7 +224,7 @@ color: #827d7d;
                     }
 			},
 			{
-				"targets": 6,
+				"targets": 7,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     if(row.refundAttachment == null){
@@ -223,7 +236,7 @@ color: #827d7d;
                     }
 			},
 			{
-				"targets": 7,
+				"targets": 8,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     comPaid = 'No';
