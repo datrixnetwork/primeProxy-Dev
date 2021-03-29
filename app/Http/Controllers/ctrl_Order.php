@@ -226,4 +226,21 @@ class ctrl_Order extends Controller
         $response                = $buisnessLayer->showOrderCommissionByUser();
         return Helper::MakeResponse('ok',$response);
     }
+
+    public function showCommissionForAdmin(Request $request)
+    {
+        //MA - Set Client info and request body data
+        $data = Helper::manageRequestData($request);
+
+        //Save models into data array
+        $data['models']['model'] = $this->_model;
+
+        //Load BL with models
+        $buisnessLayer           =  Helper::LoadBl($this->_bl,$data['models']);
+
+
+        //Load BL Function
+        $response                = $buisnessLayer->showCommissionForAdmin();
+        return Helper::MakeResponse('ok',$response);
+    }
 }

@@ -49,6 +49,7 @@ Route::middleware('header.auth')->group(function(){
                 Route::post('/setting/payment/gateway','App\Http\Controllers\ctrl_Payment_Gateway@store');
                 Route::put('/setting/email/{category}','App\Http\Controllers\ctrl_EmailContent@update');
                 Route::get('/setting/email','App\Http\Controllers\ctrl_EmailContent@index');
+                Route::get('/orders/commission/counts','App\Http\Controllers\ctrl_Order@showCommissionForAdmin');
 
             });
 

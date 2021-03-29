@@ -94,12 +94,26 @@ class bl_Order{
             }
             else{
                 $filter         = (isset($query['filter']) ? $query['filter'] : '');
+                $dateRange      = (isset($query['date']) ? $query['date'] : '');
+                // DB::connection()->enableQueryLog();
+
                 $sql = $this->_model['Order']->newQuery();
+
                 if($filter != ''){
                     $sql->where($filter);
                 }
+
+                if($dateRange != ''){
+                    $dateRanges = $dateRange[array_keys($dateRange)[0]];
+                    $dateInArray= explode(',',$dateRanges);
+
+                    $sql->whereBetween(array_keys($dateRange)[0],$dateInArray);
+                }
+
                 $sql->with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser');
                 $response = $sql->orderBy('id', 'DESC')->get();
+                // $queries = DB::getQueryLog();
+                // dd($queries);
                 return $response;
             }
         }
@@ -174,6 +188,16 @@ class bl_Order{
         FROM `tbl_Orders`
         WHERE created_by =$userId
         ) a ");
+
+        return $response;
+    }
+
+    public function showCommissionForAdmin(){
+        $response = DB::select("SELECT
+        (SELECT COALESCE(SUM(proxy_comm),0) AS totalEarnedCommission FROM tbl_Orders WHERE status_code=5 AND is_comm_paid=0) AS earnedCommission,
+        (SELECT COALESCE(SUM(proxy_comm),0) AS totalEarnedCommissionCurrentMonth FROM tbl_Orders WHERE status_code=5 AND is_comm_paid=0 AND DATE(created_on) = DATE(NOW())) AS earnedCommissionCurrentMonth,
+        (SELECT COALESCE(SUM(proxy_comm),0) AS totalPaidCommission FROM tbl_Orders WHERE is_comm_paid=1) AS paidCommission,
+        (SELECT COALESCE(SUM(proxy_comm),0) AS totalPaidCommissionCurrentMonth FROM tbl_Orders WHERE is_comm_paid=1 AND DATE(user_comm_paid_on) = DATE(NOW())) AS paidCommissionCurrentMonth");
 
         return $response;
     }
