@@ -184,7 +184,11 @@ class bl_User{
 
         if(Auth::attempt($mainData)){
             $userId          = Auth::id();
+
             $userInfo        = $this->_model['User']::select('user_name','id','user_role_id')->whereHas('userInfo',function($query){ return $query->where('is_user_verified',1); })->with('userInfo')->where('is_verified',1)->where('user_role_id',$role)->find($userId);
+            if($role == 1 && blank($userInfo)){
+                $userInfo        = $this->_model['User']::select('user_name','id','user_role_id')->whereHas('userInfo',function($query){ return $query->where('is_user_verified',1); })->with('userInfo')->where('is_verified',1)->where('user_role_id',3)->find($userId);
+            }
 
             if(blank($userInfo)){
                 $message = array('Invalid Login! User is not active');
