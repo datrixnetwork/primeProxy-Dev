@@ -28,13 +28,49 @@ class bl_Market{
 
     public function show($data,$id=false){
 
+        $query            = $data['query'];
+        $removeQueryParam = 0;
+        if(isset($data['reqBody']['removeLazyLoading']) && $data['reqBody']['removeLazyLoading'] == 1){
+            $removeQueryParam = 1;
+        }
 
         if(!$id){
-            $response      = $this->_model::get();
+            if($removeQueryParam == 0){
+                $searchVal      = (isset($query['search']) ? $query['search'] : '');
+                $filter         = (isset($query['filter']) ? $query['filter'] : '');
+
+                $sql = $this->_model->newQuery();
+
+                if($searchVal != ''){
+                    $sql->orWhere('market_place','like',"%$searchVal%");
+                }
+                $response = $sql->orderBy('id', 'DESC')->Paginate($query['length']);
+                $perPage = $response->perPage();
+                $total   = $response->total();
+
+                foreach ($response->items() as $key => $value) {
+                    $marketPlace = $value->market_place;
+                    $productCount= DB::select("Select count(id) as cnt from tbl_Products where market_place ='$marketPlace'");
+                    $response->items()[$key]->productCount = $productCount;
+                }
+
+                $response0 = array(
+                    "draw" => intval($query['draw']),
+                    "iTotalRecords" => (int)$response->perPage(),
+                    "iTotalDisplayRecords" => (int)$response->total(),
+                    'aaData'=>$response->items()
+                );
+                return $response0;
+            }
+            else{
+                $response = $this->_model::get();
+            }
         }
         else{
             $response = $this->_model::find($id);
         }
+
+
 
         if(blank($response)){
             $response = array('data'=>'No data found');

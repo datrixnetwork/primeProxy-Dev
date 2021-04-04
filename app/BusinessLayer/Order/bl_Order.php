@@ -67,20 +67,23 @@ class bl_Order{
             if($removeQueryParam == 0){
                 $searchVal      = (isset($query['search']) ? $query['search'] : '');
                 $filter         = (isset($query['filter']) ? $query['filter'] : '');
-
+                // DB::connection()->enableQueryLog();
                 $sql = $this->_model['Order']->newQuery();
 
-                if($searchVal != ''){
-                    $sql->orWhere('order_no','like',"%$searchVal%");
-                    $sql->orWhere('buyer_email','like',"%$searchVal%");
-                    $sql->orWhere('buyer_name','like',"%$searchVal%");
-                    $sql->orWhere('store_order_no','like',"%$searchVal%");
-                }
                 $sql->with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser');
                 if($filter != ''){
                     $sql->where($filter);
                 }
+
+                if($searchVal != ''){
+                    $sql->where('store_order_no','like',"%$searchVal%");
+                    $sql->orWhere('buyer_email','like',"%$searchVal%");
+                    $sql->orWhere('buyer_name','like',"%$searchVal%");
+                }
+
                 $response = $sql->orderBy('id', 'DESC')->Paginate($query['length']);
+                // $queries = DB::getQueryLog();
+                // dd($queries);
                 $perPage = $response->perPage();
                 $total   = $response->total();
 
@@ -119,7 +122,8 @@ class bl_Order{
         }
             else
             {
-                $orderData = DB::select("SELECT o.id,o.order_no,is_admin_comm_paid,is_order_rejected,o.store_order_no,o.seller_code,prd.product_code,o.is_order_verified,CONCAT(usin.first_name) AS userP,o.created_on,
+                $orderData = DB::select("SELECT o.id,o.order_no,is_admin_comm_paid,is_order_rejected,o.store_order_no,
+                o.seller_code,prd.product_name,prd.product_code,o.is_order_verified,CONCAT(usin.first_name) AS userP,o.created_on,
                     o.is_comm_paid,o.status_code,o.store_order_no,o.sold_by,os.name,o.buyer_name,o.buyer_email,
                                     o.order_description,o.is_order_verified
                                     FROM tbl_Orders o , tbl_Order_Status os,tbl_Products prd,tbl_Users_Info usin WHERE prd.id = o.product_id AND usin.user_id = o.created_by AND o.status_code = os.id AND o.id =$id;");
