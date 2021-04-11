@@ -184,11 +184,11 @@ class bl_Order{
     public function showOrderCommissionByUser(){
         $userId       = Auth::id();
 
-        $response = DB::select("SELECT concat(SUM(a.commEarned),'$') AS commEarned , concat(SUM(a.commPaid),'$') AS commPaid
+        $response = DB::select("SELECT concat(COALESCE(SUM(a.commEarned),0),'$') AS commEarned , concat(COALESCE(SUM(a.commPaid),0),'$') AS commPaid
         FROM
         (
-        SELECT IF(is_comm_paid = 0,IF(status_code = 5,IF(is_order_verified=1,1,0),0),0) AS commEarned,
-               IF(is_comm_paid = 1,IF(status_code = 13,IF(is_order_verified=1,1,0),0),0) AS commPaid
+        SELECT COALESCE(IF(is_comm_paid = 0,IF(status_code = 5,IF(is_order_verified=1,1,0),0),0),0) AS commEarned,
+               COALESCE(IF(is_comm_paid = 1,IF(status_code = 13,IF(is_order_verified=1,1,0),0),0),0) AS commPaid
         FROM `tbl_Orders`
         WHERE created_by =$userId
         ) a ");

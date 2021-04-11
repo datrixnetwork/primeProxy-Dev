@@ -25,7 +25,7 @@ class ctrl_Market extends Controller
     public function index(Request $request)
     {
         //MA - Set Client info and request body data
-        $data = Helper::manageRequestData($request,true);
+        $data = Helper::manageRequestData($request);
 
         //Save models into data array
         $data['models']['model'] = $this->_model;
