@@ -7,7 +7,6 @@
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
   <link rel="stylesheet" href="http://207.154.197.92/prime/plugins/fontawesome-free/css/all.min.css">
   <!-- DataTables -->
   <link rel="stylesheet" href="http://207.154.197.92/prime/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -82,19 +81,22 @@ color: #827d7d;
                     <th>Feedback screenshot</th>
                     <th>Refund screenshot</th>
                     <th>Commission Paid</th>
+                    <th>Order Creation Date</th>
                   </tr>
                   </thead>
                   <tbody></tbody>
                   <tfoot>
                   <tr>
-                    <th>Marketplace</th>
+                  <th>Marketplace</th>
                     <th>Product name</th>
                     <th>Order number</th>
                     <th>Price</th>
+                    <th>Order screenshot</th>
                     <th>Review screenshot</th>
                     <th>Feedback screenshot</th>
                     <th>Refund screenshot</th>
                     <th>Commission Paid</th>
+                    <th>Order Creation Date</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -134,7 +136,8 @@ color: #827d7d;
   $(function () {
     var sites = {!! $title !!};
     var loadInto ="sellerShared";
-      var url ='http://207.154.197.92/primeProxy-Dev/public/api/v1/orderSheet/'+sites;
+      var url ='http://localhost/Datrix/dtxOms/public/api/v1/orderSheet/'+sites;
+    //   var url ='localhost/Datrix/dtxOms/public/api/v1/orderSheet/'+sites;
       var formData ={};
     $("#"+loadInto).DataTable({
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
@@ -244,6 +247,14 @@ color: #827d7d;
                         comPaid = 'Yes';
                     }
                     return '<span><label class="lblClass2">'+comPaid+'</label></span>';
+                    }
+			},
+			{
+				"targets": 9,
+				data: 'data',
+				"render": function ( data, type, row, meta ) {
+                    console.log(row);
+                    return '<span><label class="lblClass2">'+row['created_on']+'</label></span>';
                     }
 			},
 		],
