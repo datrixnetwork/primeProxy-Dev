@@ -81,9 +81,8 @@ class bl_Order{
                     $sql->orWhere('buyer_name','like',"%$searchVal%");
                 }
 
-                $response = $sql->orderBy('id', 'DESC')->Paginate($query['length']);
-                // $queries = DB::getQueryLog();
-                // dd($queries);
+                $response = $sql->where('is_arcieved',0)->orderBy('id', 'DESC')->Paginate($query['length']);
+
                 $perPage = $response->perPage();
                 $total   = $response->total();
 
@@ -164,7 +163,7 @@ class bl_Order{
 
     public function showCount(){
 
-        $orderStatusCount = DB::select("SELECT COUNT(status_code) AS cnt,st.name , st.id FROM tbl_Orders o RIGHT JOIN tbl_Order_Status st ON o.status_code = st.id GROUP BY st.id");
+        $orderStatusCount = DB::select("SELECT COUNT(status_code) AS cnt,st.name , st.id FROM tbl_Orders o RIGHT JOIN tbl_Order_Status st ON o.status_code = st.id and o.is_arcieved = 0 GROUP BY st.id");
         return $orderStatusCount;
     }
 
@@ -184,15 +183,21 @@ class bl_Order{
     public function showOrderCommissionByUser(){
         $userId       = Auth::id();
 
-        $response = DB::select("SELECT concat(COALESCE(SUM(a.commEarned),0),'$') AS commEarned , concat(COALESCE(SUM(a.commPaid),0),'$') AS commPaid
-        FROM
-        (
-        SELECT COALESCE(IF(is_comm_paid = 0,IF(status_code = 5,IF(is_order_verified=1,proxy_comm,0),0),0),0) AS commEarned,
-               COALESCE(IF(is_comm_paid = 1,IF(status_code = 13,IF(is_order_verified=1,proxy_comm,0),0),0),0) AS commPaid
-        FROM `tbl_Orders`
-        WHERE created_by =$userId
-        ) a ");
+        $response = DB::select("SELECT
+        COALESCE(SUM(a.dailyProductLimit),0) AS dailyProductLimit,
+        COALESCE(SUM(a.monthlyProductLimit),0) AS monthlyProductLimit,
+        CONCAT(COALESCE(SUM(a.commEarned),0),'$') AS commEarned ,
+        CONCAT(COALESCE(SUM(a.totalCommPaid),0),'$') AS totalCommPaid
+    FROM
+    (
 
+    SELECT
+    (SELECT COALESCE(IF(p.active = 1,p.product_daily_qty,0),0) FROM tbl_Products p ) AS dailyProductLimit,
+    (SELECT COALESCE(IF(p.active = 1,p.product_monthly_qty,0),0) FROM tbl_Products p ) AS monthlyProductLimit,
+    IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 0,IF(o.status_code = 5,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o WHERE o.created_by =$userId ),0) AS commEarned,
+    IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 1,IF(o.status_code = 13,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o WHERE o.created_by =$userId ),0) AS totalCommPaid
+
+    ) a ;");
         return $response;
     }
 

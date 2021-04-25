@@ -72,6 +72,7 @@ color: #827d7d;
                 <table id="sellerShared" class="table table-bordered table-striped">
                   <thead>
                   <tr>
+                    <th>Sr #</th>
                     <th>Marketplace</th>
                     <th>Product name</th>
                     <th>Order number</th>
@@ -87,7 +88,8 @@ color: #827d7d;
                   <tbody></tbody>
                   <tfoot>
                   <tr>
-                  <th>Marketplace</th>
+                    <th>Sr #</th>
+                    <th>Marketplace</th>
                     <th>Product name</th>
                     <th>Order number</th>
                     <th>Price</th>
@@ -129,19 +131,20 @@ color: #827d7d;
 <script src="http://207.154.197.92/prime/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
 <script src="http://207.154.197.92/prime/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="http://207.154.197.92/prime/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-<script src="http://207.154.197.92/prime/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<script src="http://207.154.197.92/prime/dist/js/adminlte.min.js"></script>
+
 
 <script>
   $(function () {
     var sites = {!! $title !!};
+    var autoIndex = 0;
     var loadInto ="sellerShared";
     //   var url ='http://localhost/Datrix/dtxOms/public/api/v1/orderSheet/'+sites;
       var url ='http://207.154.197.92/primeProxy-Dev/public/api/v1/orderSheet/'+sites;
       var formData ={};
     $("#"+loadInto).DataTable({
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+      "buttons": ["copy", "csv", "excel", "pdf", "print"],
       "scrollX": false,
+      dom: 'Bfrtip',
 		"bFilter": true,
 		"bLengthChange": true,
 		"bAutoWidth":false ,
@@ -166,32 +169,41 @@ color: #827d7d;
 				"targets": 0,
 
 				"render": function ( data, type, row, meta ) {
-                    return '<span><label class="lblClass2">'+row.market_place+'</label></span>';
+          console.log(row);
+          autoIndex++;
+          return '<span><label class="lblClass2">'+autoIndex+'</label></span>';
 				}
 			},
 			{
 				"targets": 1,
+
+				"render": function ( data, type, row, meta ) {
+                    return '<span><label class="lblClass2">'+row.market_place+'</label></span>';
+				}
+			},
+			{
+				"targets": 2,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     return '<span><label class="lblClass2">'+row.product_name+'</label></span>';
                     }
 			},
 			{
-				"targets": 2,
+				"targets": 3,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    return '<span><label class="lblClass2">'+row.order_no+'</label></span>';
+                    return '<span><label class="lblClass2">'+row.store_order_no+'</label></span>';
 				}
 			},
 			{
-				"targets": 3,
+				"targets": 4,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     return '<span><label class="lblClass2">'+row.product_price+'</label></span>';
 				}
 			},
 			{
-				"targets": 4,
+				"targets": 5,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     if(row.orderCreated == null){
@@ -203,7 +215,7 @@ color: #827d7d;
 				}
 			},
 			{
-				"targets": 5,
+				"targets": 6,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     if(row.reviewAttachment == null){
@@ -215,7 +227,7 @@ color: #827d7d;
 				}
 			},
 			{
-				"targets": 6,
+				"targets": 7,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     if(row.feedbackAttachment == null){
@@ -227,7 +239,7 @@ color: #827d7d;
                     }
 			},
 			{
-				"targets": 7,
+				"targets": 8,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     if(row.refundAttachment == null){
@@ -239,7 +251,7 @@ color: #827d7d;
                     }
 			},
 			{
-				"targets": 8,
+				"targets": 9,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
                     comPaid = 'No';
@@ -250,12 +262,11 @@ color: #827d7d;
                     }
 			},
 			{
-				"targets": 9,
+				"targets": 10,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    console.log(row);
-                    return '<span><label class="lblClass2">'+row['created_on']+'</label></span>';
-                    }
+              return '<span><label class="lblClass2">'+row['created_on']+'</label></span>';
+          }
 			},
 		],
 		'order': [[0, 'desc']],
