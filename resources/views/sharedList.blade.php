@@ -72,33 +72,35 @@ color: #827d7d;
                 <table id="sellerShared" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                    <th>Sr #</th>
-                    <th>Marketplace</th>
-                    <th>Product name</th>
-                    <th>Order number</th>
-                    <th>Price</th>
-                    <th>Order screenshot</th>
-                    <th>Review screenshot</th>
-                    <th>Feedback screenshot</th>
-                    <th>Refund screenshot</th>
-                    <th>Commission Paid</th>
-                    <th>Order Creation Date</th>
+                    <th width=4%>Sr #</th>
+                    <th width=4%>Date</th>
+                    <th width=4%>Country</th>
+                    <th width=8%>Product Name</th>
+                    <th width=8%>Order Number</th>
+                    <th width=8%>Paypal Email</th>
+                    <th width=6%>Price</th>
+                    <th width=12%>Order image</th>
+                    <th width=12%>Review image</th>
+                    <th width=12%>Feedback image</th>
+                    <th width=12%>Refund image</th>
+                    <th width=5%>Paid</th>
                   </tr>
                   </thead>
                   <tbody></tbody>
                   <tfoot>
                   <tr>
                     <th>Sr #</th>
-                    <th>Marketplace</th>
-                    <th>Product name</th>
-                    <th>Order number</th>
+                    <th>Date</th>
+                    <th>Country</th>
+                    <th>Product Name</th>
+                    <th>Order Number</th>
+                    <th>Paypal Email</th>
                     <th>Price</th>
-                    <th>Order screenshot</th>
-                    <th>Review screenshot</th>
-                    <th>Feedback screenshot</th>
-                    <th>Refund screenshot</th>
-                    <th>Commission Paid</th>
-                    <th>Order Creation Date</th>
+                    <th>Order image</th>
+                    <th>Review image</th>
+                    <th>Feedback image</th>
+                    <th>Refund image</th>
+                    <th>Comm Paid</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -150,8 +152,8 @@ color: #827d7d;
 		"bAutoWidth":false ,
 		"autoWidth": true,
         "paging": false,
-    "ordering": false,
-      'serverMethod': 'post',
+        "ordering": false,
+        'serverMethod': 'post',
 
 		'ajax': {
       type:'GET',
@@ -166,107 +168,124 @@ color: #827d7d;
 		},
 		'columnDefs': [
 			{
-				"targets": 0,
-
-				"render": function ( data, type, row, meta ) {
-          console.log(row);
-          autoIndex++;
-          return '<span><label class="lblClass2">'+autoIndex+'</label></span>';
-				}
-			},
+                "targets": 0,
+                "render": function ( data, type, row, meta ) {
+                    autoIndex++;
+                    return '<span><label class="lblClass2">'+autoIndex+'</label></span>';
+                    }
+            },
 			{
 				"targets": 1,
-
 				"render": function ( data, type, row, meta ) {
-                    return '<span><label class="lblClass2">'+row.market_place+'</label></span>';
+                    return '<span><label class="lblClass2">'+row['created_on']+'</label></span>';
 				}
 			},
 			{
 				"targets": 2,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    return '<span><label class="lblClass2">'+row.product_name+'</label></span>';
+                    return '<span><label class="lblClass2">'+row.market_place+'</label></span>';
+
                     }
 			},
 			{
 				"targets": 3,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    return '<span><label class="lblClass2">'+row.store_order_no+'</label></span>';
+                    return '<span><label class="lblClass2">'+row.product_name+'</label></span>';
+
 				}
 			},
 			{
 				"targets": 4,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    return '<span><label class="lblClass2">'+row.product_price+'</label></span>';
+                    return '<span><label class="lblClass2">'+row.store_order_no+'</label></span>';
 				}
 			},
 			{
 				"targets": 5,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    if(row.orderCreated == null){
-                        var ordreCreated = "No Order Screen shot yet";
-                    }else{
-                        var ordreCreated = '<img  onclick="onClick(this)"  src='+row.orderCreated+' width=20%>';
-                    }
-                    return '<center><label class="lblClass2">'+ordreCreated+'</label></center>';
+                    console.log(row);
+                    return '<span><label class="lblClass2">'+row.buyer_email+'</label></span>';
 				}
 			},
 			{
 				"targets": 6,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    if(row.reviewAttachment == null){
-                        var review = "No Reviews yet";
-                    }else{
-                        var review = '<img  onclick="onClick(this)"  src='+row.reviewAttachment+' width=20%>';
-                    }
-                    return '<center><label class="lblClass2">'+review+'</label></center>';
+                    return '<span><label class="lblClass2">'+row.product_price+'</label></span>';
 				}
 			},
 			{
 				"targets": 7,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    if(row.feedbackAttachment == null){
-                        var feedback = "No Feedback yet";
+
+                    if(row.orderCreated == null){
+                        var ordreCreated = "No Order Screen shot yet";
                     }else{
-                        var feedback = '<a href='+row.feedbackAttachment+' download><img src='+row.feedbackAttachment+' width=20%></a>';
+                        var ordreCreated = '<img  onclick="onClick(this)"  src='+row.orderCreated+' width=30%>';
                     }
-                    return '<center><label class="lblClass2">'+feedback+'</label></center>';
+                    return '<center><label class="lblClass2">'+ordreCreated+'</label></center>';
+
                     }
 			},
 			{
 				"targets": 8,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    if(row.refundAttachment == null){
-                        var refund = "No Refund yet";
+
+                    if(row.reviewAttachment == null){
+                        var review = "No Reviews yet";
                     }else{
-                        var refund = '<a href='+row.refundAttachment+' download><img src='+row.refundAttachment+' width=20%></a>';
+                        var review = '<img  onclick="onClick(this)"  src='+row.reviewAttachment+' width=30%>';
                     }
-                    return '<center><label class="lblClass2">'+refund+'</label></center>';
+                    return '<center><label class="lblClass2">'+review+'</label></center>';
+
+
                     }
 			},
 			{
 				"targets": 9,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    comPaid = 'No';
-                    if(row.is_admin_comm_paid ==1){
-                        comPaid = 'Yes';
+
+                    if(row.feedbackAttachment == null){
+                        var feedback = "No Feedback yet";
+                    }else{
+                        var feedback = '<img onclick="onClick(this)" src='+row.feedbackAttachment+' width=30%>';
                     }
-                    return '<span><label class="lblClass2">'+comPaid+'</label></span>';
+                    return '<center><label class="lblClass2">'+feedback+'</label></center>';
+
                     }
 			},
 			{
 				"targets": 10,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-              return '<span><label class="lblClass2">'+row['created_on']+'</label></span>';
+
+                    if(row.refundAttachment == null){
+                        var refund = "No Refund yet";
+                    }else{
+                        var refund = '<img onclick="onClick(this)" src='+row.refundAttachment+' width=30%>';
+                    }
+                    return '<center><label class="lblClass2">'+refund+'</label></center>';
+
           }
+			},
+			{
+				"targets": 11,
+				data: 'data',
+				"render": function ( data, type, row, meta ) {
+
+                    comPaid = 'No';
+                    if(row.is_admin_comm_paid ==1){
+                        comPaid = 'Yes';
+                    }
+                    return '<span><label class="lblClass2">'+comPaid+'</label></span>';
+                    }
 			},
 		],
 		'order': [[0, 'desc']],
