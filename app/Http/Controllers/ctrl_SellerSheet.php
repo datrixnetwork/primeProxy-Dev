@@ -24,7 +24,7 @@ class ctrl_SellerSheet extends Controller
         $orderImgUrl = $company::select('order_img_url')->first();
         $orderImgUrl = $orderImgUrl['order_img_url'];
 
-        $data = DB::select("SELECT p.market_place,p.product_name,o.order_no,p.product_price,o.buyer_email,o.is_admin_comm_paid,DATE_FORMAT(o.created_on, '%M-%d %Y') as created_on,
+        $data = DB::select("SELECT p.market_place,p.product_name,o.order_no,p.product_price,o.buyer_email,o.is_admin_comm_paid,DATE_FORMAT(o.created_on, '%M/%d/%y') as created_on,
         o.store_order_no,
         (SELECT CONCAT('$orderImgUrl','',oa.attachment) FROM tbl_Order_Attachments oa WHERE o.id = oa.order_id AND oa.status_id = 1) AS orderCreated,
         (SELECT CONCAT('$orderImgUrl','',oa.attachment) FROM tbl_Order_Attachments oa WHERE o.id = oa.order_id AND oa.status_id = 2) AS reviewAttachment,
