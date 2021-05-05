@@ -79,6 +79,7 @@ class bl_Order{
                     $sql->where('store_order_no','like',"%$searchVal%");
                     $sql->orWhere('buyer_email','like',"%$searchVal%");
                     $sql->orWhere('buyer_name','like',"%$searchVal%");
+                    $sql->orWhere('sold_by','like',"%$searchVal%");
                 }
 
                 $response = $sql->where('is_arcieved',0)->orderBy('id', 'DESC')->Paginate($query['length']);
@@ -192,8 +193,8 @@ class bl_Order{
     (
 
     SELECT
-    (SELECT COALESCE(IF(p.active = 1,p.product_daily_qty,0),0) FROM tbl_Products p ) AS dailyProductLimit,
-    (SELECT COALESCE(IF(p.active = 1,p.product_monthly_qty,0),0) FROM tbl_Products p ) AS monthlyProductLimit,
+    (SELECT SUM(COALESCE(IF(p.active = 1,p.product_daily_qty,0),0)) FROM tbl_Products p ) AS dailyProductLimit,
+    (SELECT SUM(COALESCE(IF(p.active = 1,p.product_monthly_qty,0),0)) FROM tbl_Products p ) AS monthlyProductLimit,
     IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 0,IF(o.status_code = 5,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o WHERE o.created_by =$userId ),0) AS commEarned,
     IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 1,IF(o.status_code = 13,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o WHERE o.created_by =$userId ),0) AS totalCommPaid
 
