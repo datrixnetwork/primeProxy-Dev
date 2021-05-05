@@ -143,6 +143,8 @@ color: #827d7d;
     //   var url ='http://localhost/Datrix/dtxOms/public/api/v1/orderSheet/'+sites;
       var url ='http://207.154.197.92/primeProxy-Dev/public/api/v1/orderSheet/'+sites;
       var formData ={};
+      var authToken = JSON.parse(localStorage.getItem('verificationTicket'));
+
     $("#"+loadInto).DataTable({
       "buttons": ["copy", "csv", "excel", "pdf", "print"],
       "scrollX": false,
@@ -207,7 +209,6 @@ color: #827d7d;
 				"targets": 5,
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
-                    console.log(row);
                     return '<span><label class="lblClass2">'+row.buyer_email+'</label></span>';
 				}
 			},
@@ -280,12 +281,17 @@ color: #827d7d;
 				data: 'data',
 				"render": function ( data, type, row, meta ) {
 
-                    comPaid = 'No';
-                    if(row.is_admin_comm_paid ==1){
-                        comPaid = 'Yes';
-                    }
-                    return '<span><label class="lblClass2">'+comPaid+'</label></span>';
-                    }
+                comPaid = 'No';
+                var markPaid="";
+                if(authToken!=null){
+                     markPaid = '<input type="checkbox" onclick=\'markAdminCommissionPaid('+row.orderId+')\'>';
+                }
+                if(row.is_admin_comm_paid ==1){
+                    comPaid = 'Yes';
+                    markPaid='';
+                }
+                return '<span><label class="lblClass2">'+comPaid+' '+markPaid+'</label></span>';
+                }
 			},
 		],
 		'order': [[0, 'desc']],
@@ -307,9 +313,46 @@ color: #827d7d;
   });
 
   function onClick(element) {
-  document.getElementById("img01").src = element.src;
-  document.getElementById("modal01").style.display = "block";
+      document.getElementById("img01").src = element.src;
+      document.getElementById("modal01").style.display = "block";
+  }
+
+  function markAdminCommissionPaid(id){
+    // var urlToPost      = 'http://localhost/Datrix/dtxOms/public/api/v1/admin/orders/'+id;
+    var urlToPost      = 'http://207.154.197.92/primeProxy-Dev/public/api/v1/admin/orders/'+id;
+    var authToken      = JSON.parse(localStorage.getItem('verificationTicket'));
+    var formData = {
+        'is_admin_comm_paid':1,
+        'admin_comm_paid_on' :getCurrentDate()
+      }
+
+	$.ajax({
+		url: urlToPost,
+		type: 'PUT',
+		data: formData ,
+        headers: {
+        'x-clx-id' : 1,
+        'x-clx-key': 'kso8GaEgUsdadh7LE796WeRt9P4Mn61Q0PoKEEWq',
+        'Authorization': 'Bearer '+authToken,
+        },
+		success: function (data) {
+			result = 1;
+		},
+	});
+
 }
+
+function getCurrentDate(){
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = yyyy+'-'+mm+'-'+dd;
+  return today;
+}
+
+
 
 
 </script>
