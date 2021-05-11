@@ -11,7 +11,7 @@ class ctrl_Order extends Controller
     private $_bl;                                 //Buisness Layer Name
     private $_layer         = 'bl_Order';      //Buisness Layer Name
     private $_buisness      = 'Order';        //Buisness Layer folder name
-    private $_model         = 'Order,Order_Attachment,Order_Status';       //Model Name
+    private $_model         = 'Order,Order_Attachment,Order_Status,User';       //Model Name
 
     public function __construct(){
         $this->_bl     = $this->_buisness."\\".$this->_layer;

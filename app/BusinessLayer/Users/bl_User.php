@@ -148,6 +148,18 @@ class bl_User{
             $response = $this->_model['User']::find($id);
             return $response;
         }
+        else if(isset($request['body']['refer_update']) && $request['body']['refer_update'] == 1){
+            unset($request['body']['refer_update']);
+            $updateQuery = DB::update('UPDATE tbl_Users set referel_bonus=referel_bonus+1 WHERE id ='.$id);
+            $response = $this->_model['User']::find($id);
+            return $response;
+        }
+        else if(isset($request['body']['refer_update']) && $request['body']['refer_update'] == 2){
+            unset($request['body']['refer_update']);
+            $updateQuery = DB::update('UPDATE tbl_Users set is_refer=0 WHERE id ='.$id);
+            $response = $this->_model['User']::find($id);
+            return $response;
+        }
         else{
             $first_name           = $request['body']['first_name'];
             $last_name            = $request['body']['last_name'];
@@ -191,7 +203,7 @@ class bl_User{
             }
 
             if(blank($userInfo)){
-                $message = array('Invalid Login! User is not active');
+                $message = array('message'=>'Invalid Login! User is not active');
                 return Helper::MakeResponse('error',$message);
             }
 

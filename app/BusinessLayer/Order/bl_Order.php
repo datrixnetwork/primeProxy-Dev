@@ -18,7 +18,8 @@ class bl_Order{
         if(!$this->_model){
             $this->_model = Helper::LoadMdl($data['model']);
         }
-     }
+    }
+
 
 
     public function create($data){
@@ -38,7 +39,7 @@ class bl_Order{
             $orderNo     = $lastOrder->order_no;
             $orderNo++;
         }
-
+        // $this->checkReferlBonus(Auth::id());
         $orderData['order_no'] = $orderNo;
         $order    = $this->_model['Order']::create($orderData);
         $orderId  = $order->id;
@@ -123,10 +124,10 @@ class bl_Order{
             else
             {
                 $orderData = DB::select("SELECT o.id,o.order_no,is_admin_comm_paid,is_order_rejected,o.store_order_no,
-                o.seller_code,prd.product_name,prd.product_code,o.is_order_verified,CONCAT(usin.first_name) AS userP,o.created_on,
+                o.seller_code,prd.product_name,prd.product_code,o.is_order_verified,us.is_refer AS isUserRefer,us.refer_by as referalBy,us.referel_count as referalCount,CONCAT(usin.first_name) AS userP,o.created_on,o.created_by,
                     o.is_comm_paid,o.status_code,o.store_order_no,o.sold_by,os.name,o.buyer_name,o.buyer_email,
                                     o.order_description,o.is_order_verified
-                                    FROM tbl_Orders o , tbl_Order_Status os,tbl_Products prd,tbl_Users_Info usin WHERE prd.id = o.product_id AND usin.user_id = o.created_by AND o.status_code = os.id AND o.id =$id;");
+                                    FROM tbl_Orders o , tbl_Order_Status os,tbl_Products prd,tbl_Users_Info usin,tbl_Users us WHERE prd.id = o.product_id AND usin.user_id = us.id AND usin.user_id = o.created_by AND o.status_code = os.id AND o.id =$id;");
 
             $attachmentData = DB::select("SELECT ot.id,ot.attachment_note,ot.attachment,ast.name,'$orderImgUrl' as imgPath,CONCAT(usin.first_name) AS userP,ot.created_on
                                             FROM tbl_Order_Attachments ot , tbl_Attachment_Status ast ,tbl_Users_Info usin
@@ -158,13 +159,13 @@ class bl_Order{
        $this->_model['Order']::where('id', $id)->update($request['body']);
 
        $response = $this->_model['Order']::find($id);
-    return $response;
+       return $response;
 
     }
 
     public function showCount(){
 
-        $orderStatusCount = DB::select("SELECT COUNT(status_code) AS cnt,st.name , st.id FROM tbl_Orders o RIGHT JOIN tbl_Order_Status st ON o.status_code = st.id and o.is_arcieved = 0 GROUP BY st.id");
+        $orderStatusCount = DB::select("SELECT COUNT(status_code) AS cnt,st.name , st.id FROM tbl_Orders o INNER JOIN tbl_Users us ON o.created_by= us.id RIGHT JOIN tbl_Order_Status st ON o.status_code = st.id and o.is_arcieved = 0 GROUP BY st.id");
         return $orderStatusCount;
     }
 
@@ -188,27 +189,34 @@ class bl_Order{
         COALESCE(SUM(a.dailyProductLimit),0) AS dailyProductLimit,
         COALESCE(SUM(a.monthlyProductLimit),0) AS monthlyProductLimit,
         CONCAT(COALESCE(SUM(a.commEarned),0),'$') AS commEarned ,
-        CONCAT(COALESCE(SUM(a.totalCommPaid),0),'$') AS totalCommPaid
-    FROM
-    (
-
-    SELECT
-    (SELECT SUM(COALESCE(IF(p.active = 1,p.product_daily_qty,0),0)) FROM tbl_Products p ) AS dailyProductLimit,
-    (SELECT SUM(COALESCE(IF(p.active = 1,p.product_monthly_qty,0),0)) FROM tbl_Products p ) AS monthlyProductLimit,
-    IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 0,IF(o.status_code = 5,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o WHERE o.created_by =$userId ),0) AS commEarned,
-    IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 1,IF(o.status_code = 13,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o WHERE o.created_by =$userId ),0) AS totalCommPaid
-
-    ) a ;");
+        CONCAT(COALESCE(SUM(a.totalCommPaid),0),'$') AS totalCommPaid,
+        CONCAT(COALESCE(SUM(a.refrelBonus),0),'$') AS refrelBonus
+        FROM
+        (
+            SELECT
+            (SELECT SUM(COALESCE(IF(p.active = 1,p.product_daily_qty,0),0)) FROM tbl_Products p ) AS dailyProductLimit,
+            (SELECT SUM(COALESCE(IF(p.active = 1,p.product_monthly_qty,0),0)) FROM tbl_Products p ) AS monthlyProductLimit,
+            IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 0,IF(o.status_code = 5,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o,tbl_Users us WHERE  us.id=o.created_by AND o.created_by =$userId),0) AS commEarned,
+            IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 1,IF(o.status_code = 13,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o,tbl_Users us WHERE us.id=o.created_by AND o.created_by =$userId),0) AS totalCommPaid,
+            IFNULL((SELECT SUM(us.referel_bonus) FROM tbl_Orders o,tbl_Users us WHERE us.id=o.created_by AND o.created_by =$userId),0) AS refrelBonus
+        ) a ;");
         return $response;
     }
 
     public function showCommissionForAdmin(){
         $response = DB::select("SELECT
-        (SELECT COALESCE(SUM(proxy_comm),0) AS totalEarnedCommission FROM tbl_Orders WHERE status_code=5 AND is_comm_paid=0) AS earnedCommission,
-        (SELECT COALESCE(SUM(proxy_comm),0) AS totalEarnedCommissionCurrentMonth FROM tbl_Orders WHERE status_code=5 AND is_comm_paid=0 AND DATE(created_on) = DATE(NOW())) AS earnedCommissionCurrentMonth,
+        (SELECT COALESCE(SUM(o.proxy_comm+us.refer_bonus),0) AS totalEarnedCommission FROM tbl_Orders o,tbl_Users us WHERE  us.id=o.created_by and o.status_code=5 AND o.is_comm_paid=0) AS earnedCommission,
+        (SELECT COALESCE(SUM(o.proxy_comm+us.refer_bonus),0) AS totalEarnedCommissionCurrentMonth FROM tbl_Orders o,tbl_Users us WHERE  us.id=o.created_by and status_code=5 AND is_comm_paid=0 AND DATE(created_on) = DATE(NOW())) AS earnedCommissionCurrentMonth,
         (SELECT COALESCE(SUM(proxy_comm),0) AS totalPaidCommission FROM tbl_Orders WHERE is_comm_paid=1) AS paidCommission,
         (SELECT COALESCE(SUM(proxy_comm),0) AS totalPaidCommissionCurrentMonth FROM tbl_Orders WHERE is_comm_paid=1 AND DATE(user_comm_paid_on) = DATE(NOW())) AS paidCommissionCurrentMonth");
 
         return $response;
     }
+
+    // private function checkReferlBonus($userId){
+    //     $userInfo       = $this->_model['User']::find($userId);
+    //     $isUserRefered  = $userInfo->is_refer;
+    //     $referBy        = $userInfo->refer_by;
+
+    // }
 }

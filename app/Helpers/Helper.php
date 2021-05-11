@@ -182,6 +182,13 @@ class Helper{
             $query['date'] = $queryParam['date'];
         }
 
+        if(isset($queryParam['referal'])){
+            $query['referal'] = $queryParam['referal'];
+        }
+        if(isset($queryParam['user'])){
+            $query['user'] = $queryParam['user'];
+        }
+
         // if(isset($queryParam['is_login']) || isset($queryParam['is_verified'])){
             $isLogin    = (isset($queryParam['is_login']) ? $queryParam['is_login'] : '');
             $isVerified = (isset($queryParam['is_verified']) ? $queryParam['is_verified'] : '');

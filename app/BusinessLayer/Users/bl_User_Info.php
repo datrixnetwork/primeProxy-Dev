@@ -36,6 +36,11 @@ class bl_User_Info{
         }
 
         $firstName              = $data0['user_name'];
+        $refByUser              = $data0['ref_by_user'];
+        $isRefer                = 0;
+        if($refByUser !=0){
+            $isRefer = 1;
+        }
         $userName               = Str::lower($firstName).rand(10,1000000).'@primeMarket.com';
         $passswordDecrypt       = Helper::generateRandomString(8);
         $userPassword           = md5($passswordDecrypt);
@@ -46,9 +51,9 @@ class bl_User_Info{
             DB::beginTransaction();
             if($isEmailValid){ $data0['is_email_verified'] =1; }
 
-            $userInfo               = $this->_model['User']::create(['user_name'=>$userName,'user_password'=>$userPassword,'user_role_id'=>2,'pass_decrypt'=>$passswordDecrypt]);
+            $userInfo               = $this->_model['User']::create(['user_name'=>$userName,'user_password'=>$userPassword,'user_role_id'=>2,'pass_decrypt'=>$passswordDecrypt,'is_refer'=>$isRefer,'refer_by'=>$refByUser]);
             $gatewayData            = array('user_id'=>$userInfo['id'],'gateway_id'=>$data0['gateway_id'],'acc_title'=>$data0['acc_title'],'acc_number'=>$data0['acc_number']);
-            unset($data0['gateway_id'],$data0['acc_title'],$data0['acc_number'],$data0['user_name'],$data0['user_password']);
+            unset($data0['gateway_id'],$data0['acc_title'],$data0['acc_number'],$data0['user_name'],$data0['user_password'],$data0['ref_by_user']);
             $data0['user_id']       = $userInfo['id'];
 
             $paymentUserGateway     = $this->_model['User_Payment_Info']::create($gatewayData);
