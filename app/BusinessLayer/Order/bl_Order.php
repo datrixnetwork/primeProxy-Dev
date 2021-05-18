@@ -190,7 +190,8 @@ class bl_Order{
         COALESCE(SUM(a.monthlyProductLimit),0) AS monthlyProductLimit,
         CONCAT(COALESCE(SUM(a.commEarned),0),'$') AS commEarned ,
         CONCAT(COALESCE(SUM(a.totalCommPaid),0),'$') AS totalCommPaid,
-        CONCAT(COALESCE(SUM(a.refrelBonus),0),'$') AS refrelBonus
+        CONCAT(COALESCE(SUM(a.refrelBonus),0),'$') AS refrelBonus,
+        CONCAT(COALESCE(SUM(a.paid_bonus),0),'$') AS refrelBonusPaid
         FROM
         (
             SELECT
@@ -198,7 +199,8 @@ class bl_Order{
             (SELECT SUM(COALESCE(IF(p.active = 1,p.product_monthly_qty,0),0)) FROM tbl_Products p ) AS monthlyProductLimit,
             IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 0,IF(o.status_code = 5,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o,tbl_Users us WHERE  us.id=o.created_by AND o.created_by =$userId),0) AS commEarned,
             IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 1,IF(o.status_code = 13,IF(o.is_order_verified=1,o.proxy_comm,0),0),0),0)) FROM tbl_Orders o,tbl_Users us WHERE us.id=o.created_by AND o.created_by =$userId),0) AS totalCommPaid,
-            IFNULL((SELECT SUM(us.referel_bonus) FROM tbl_Orders o,tbl_Users us WHERE us.id=o.created_by AND o.created_by =$userId),0) AS refrelBonus
+            IFNULL((SELECT SUM(us.referel_bonus) FROM tbl_Orders o,tbl_Users us WHERE us.id=o.created_by AND o.created_by =$userId),0) AS refrelBonus,
+            IFNULL((SELECT SUM(us.paid_bonus) FROM tbl_Orders o,tbl_Users us WHERE us.id=o.created_by AND o.created_by =$userId),0) AS paid_bonus
         ) a ;");
         return $response;
     }

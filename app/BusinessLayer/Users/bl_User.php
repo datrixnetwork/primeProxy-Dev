@@ -160,6 +160,12 @@ class bl_User{
             $response = $this->_model['User']::find($id);
             return $response;
         }
+        else if(isset($request['body']['refer_update']) && $request['body']['refer_update'] == 3){
+            unset($request['body']['refer_update']);
+            $updateQuery = DB::update('UPDATE tbl_Users set paid_bonus=paid_bonus+referel_bonus,referel_count=0,referel_bonus=0 WHERE id ='.$id);
+            $response = $this->_model['User']::find($id);
+            return $response;
+        }
         else{
             $first_name           = $request['body']['first_name'];
             $last_name            = $request['body']['last_name'];
