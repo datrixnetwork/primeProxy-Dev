@@ -280,6 +280,7 @@ class bl_User{
         $userActCount = DB::select("
         SELECT
                 COALESCE(SUM(a.activeUsers),0) AS activeUsers,
+                COALESCE(SUM(a.pendingSignup),0) AS pendingSignup,
                 COALESCE(SUM(a.pendingCustomerReview),0) AS pendingCustomerReview,
                 COALESCE(SUM(a.commEarned),0) AS commEarned ,
                 COALESCE(SUM(a.completedOrders),0) AS completedOrders
@@ -288,6 +289,7 @@ class bl_User{
 
             SELECT
             (SELECT COUNT(id) AS activeUsers FROM tbl_Users WHERE active=1 AND is_verified = 1) AS activeUsers,
+            (SELECT COUNT(id) AS activeUsers FROM tbl_Users WHERE active=1 AND is_verified = 0) AS pendingSignup,
             (SELECT COUNT(id) FROM tbl_Orders WHERE status_code=2 AND is_order_verified=1) AS pendingCustomerReview,
             IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 0,IF(o.status_code = 5,IF(o.is_order_verified=1,o.id,0),0),0),0)) FROM tbl_Orders o  ),0) AS commEarned,
             (SELECT COUNT(id) FROM tbl_Orders WHERE status_code=13 AND is_order_verified=1 AND DATE(user_comm_paid_on) = DATE(NOW())) AS completedOrders
