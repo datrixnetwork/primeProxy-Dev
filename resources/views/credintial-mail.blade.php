@@ -87,7 +87,7 @@
                                                                         <table width="100%" cellspacing="0" cellpadding="0">
                                                                             <tbody>
                                                                                 <tr>
-                                                                                    <td class="esd-block-image es-p20b" align="center" style="font-size:0"><a href="#" target="_blank"><img src="http://207.154.197.92/prime/dist/img/logo1.jpeg" alt style="display: block;" width="154"></a></td>
+                                                                                    <td class="esd-block-image es-p20b" align="center" style="font-size:0"><a href="#" target="_blank"><img src="http://178.128.158.204/PrimeProxyMarketing/dist/img/logo1.jpeg" alt style="display: block;" width="154"></a></td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -155,7 +155,7 @@
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
-                                                                                    <td class="esd-block-button es-p20t es-p20b es-p10r es-p10l" align="center"><span class="es-button-border" style="background: #f8f3ef none repeat scroll 0% 0%;"><a href="http://207.154.197.92/prime/logint.html" class="es-button" target="_blank" style="background: #f8f3ef none repeat scroll 0% 0%; border-color: #f8f3ef;">Log In Now</a></span></td>
+                                                                                    <td class="esd-block-button es-p20t es-p20b es-p10r es-p10l" align="center"><span class="es-button-border" style="background: #f8f3ef none repeat scroll 0% 0%;"><a href="http://178.128.158.204/PrimeProxyMarketing/logint.html" class="es-button" target="_blank" style="background: #f8f3ef none repeat scroll 0% 0%; border-color: #f8f3ef;">Log In Now</a></span></td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
