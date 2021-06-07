@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['cors'])->group(function () {
+// Route::middleware(['cors'])->group(function () {
     Route::middleware('header.auth')->group(function(){
         // v1.0 - Auth prefix Group
         Route::prefix('/auth')->group(function(){
@@ -78,7 +78,7 @@ Route::middleware(['cors'])->group(function () {
        // Route::get('AfasDfqwDAFQdasFQWeqwDasgfWEGREYTjSDFqwdas/{id}','App\Http\Controllers\ctrl_SellerSheet@index');
         Route::get('orderSheet/{id}','App\Http\Controllers\ctrl_SellerSheet@show');
     });
-});
+// });
 
 Route::get("/AfasDfqwDAFQdasFQWeqwDasgfWEGREYTjSDFqwdas/{id}", function($id){
     return redirect('AfasDfqwDAFQdasFQWeqwDasgfWEGREYTjSDFqwdas/'.$id);
