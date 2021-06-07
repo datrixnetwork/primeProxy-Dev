@@ -67,6 +67,6 @@ class Kernel extends HttpKernel
         'admin.auth' =>\App\Http\Middleware\AuthorizationAdmin::class,
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
-        'cors' => \Barryvdh\Cors\HandleCors::class, // add this line to enable cors to your routes
+        // 'cors' => \Barryvdh\Cors\HandleCors::class, // add this line to enable cors to your routes
     ];
 }
