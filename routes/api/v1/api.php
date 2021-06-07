@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Route;
                 Route::middleware(['admin.auth', 'scope:validate-admin'])->group(function(){
 
                     // v1.0 - Product group
-                    Route::resource('/products','App\Http\Controllers\ctrl_Product');
+                    Route::resource('/products','App\Http\Controllers\ctrl_Product')->middleware('cors');
                     Route::resource('/comment','App\Http\Controllers\ctrl_Comment');
                     Route::get('/product/all','App\Http\Controllers\ctrl_Product@showAllProduct');
                     Route::resource('/market/place','App\Http\Controllers\ctrl_Market');
