@@ -7,12 +7,12 @@
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <link rel="stylesheet" href="http://178.128.158.204/PrimeProxyMarketing/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="http://primeproxymarketing.com/plugins/fontawesome-free/css/all.min.css">
   <!-- DataTables -->
-  <link rel="stylesheet" href="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-  <link rel="stylesheet" href="http://178.128.158.204/PrimeProxyMarketing/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="http://primeproxymarketing.com/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="http://primeproxymarketing.com/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="http://primeproxymarketing.com/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <link rel="stylesheet" href="http://primeproxymarketing.com/dist/css/adminlte.min.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 <style>
@@ -121,18 +121,18 @@ color: #827d7d;
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/jquery/jquery.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables  & Plugins -->
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-<script src="http://178.128.158.204/PrimeProxyMarketing/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="http://primeproxymarketing.com/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 
 
 <script>
@@ -141,7 +141,7 @@ color: #827d7d;
     var autoIndex = 0;
     var loadInto ="sellerShared";
     //   var url ='http://localhost/Datrix/dtxOms/public/api/v1/orderSheet/'+sites;
-      var url ='http://178.128.158.204/primeProxy-Dev/public/api/v1/orderSheet/'+sites;
+      var url ='http://primeproxymarketing.com/primeProxy-Dev/public/api/v1/orderSheet/'+sites;
       var formData ={};
       var authToken = JSON.parse(localStorage.getItem('verificationTicket'));
 
@@ -320,7 +320,7 @@ color: #827d7d;
 
   function markAdminCommissionPaid(id){
     // var urlToPost      = 'http://localhost/Datrix/dtxOms/public/api/v1/admin/orders/'+id;
-    var urlToPost      = 'http://178.128.158.204/primeProxy-Dev/public/api/v1/admin/orders/'+id;
+    var urlToPost      = 'http://primeproxymarketing.com/primeProxy-Dev/public/api/v1/admin/orders/'+id;
     var authToken      = JSON.parse(localStorage.getItem('verificationTicket'));
     var formData = {
         'is_admin_comm_paid':1,
