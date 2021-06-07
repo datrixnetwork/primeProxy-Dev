@@ -64,7 +64,7 @@ class bl_Product{
                 $searchVal      = (isset($query['search']) ? $query['search'] : '');
                 $filter         = (isset($query['filter']) ? $query['filter'] : '');
 
-                $sql = $this->_model::select('product_img','block_on','product_code','id','active','product_name','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','seller_code','is_block','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->newQuery();
+                $sql = $this->_model::select('product_img','block_on','product_code','id','active','product_name','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','seller_code','is_block','sold_by','asin','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->newQuery();
 
                 if($searchVal != ''){
                     $sql->orWhere('product_code','like',"%$searchVal%");
@@ -92,14 +92,14 @@ class bl_Product{
             }
             else{
 
-                $response0 = $this->_model::select('product_img','block_on','product_name','seller_code','product_code','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+                $response0 = $this->_model::select('product_img','block_on','product_name','seller_code','product_code','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','asin','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
                 ->where('product_daily_qty','>','0')
                 ->where('is_block',0)->get();
                 return Helper::MakeResponse('ok',$response0);
             }
         }
         else{
-            $response0 = $this->_model::select('product_img','block_on','asin','product_name','seller_code','product_code','product_description','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
+            $response0 = $this->_model::select('product_img','block_on','asin','product_name','seller_code','product_code','product_description','is_block','id','active','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','asin','product_monthly_qty','product_daily_qty','product_price','sold_by','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))
                          ->find($id);
         }
 
