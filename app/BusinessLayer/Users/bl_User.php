@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Models\mdl_Company;
+use Auth;
 
 class bl_User{
 
@@ -96,6 +97,10 @@ class bl_User{
 
         }
         else{
+            $userId        = Auth::id();
+            if($userId != $id){
+                throw new Exception("Access denied", 403);
+            }
             $response = $this->_model['User']::with('userInfo')
             ->with('userAccountInfo',function($query){
                 return $query->with('paymentGateway');
