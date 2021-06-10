@@ -96,10 +96,7 @@ class bl_User{
 
         }
         else{
-            $userId        = Auth::id();
-            if($userId != $id){
-                throw new Exception("Access denied", 403);
-            }
+
             $response = $this->_model['User']::with('userInfo')
             ->with('userAccountInfo',function($query){
                 return $query->with('paymentGateway');
