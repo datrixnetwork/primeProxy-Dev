@@ -91,7 +91,7 @@ class bl_Order{
                 ->take($query['length'])
                 ->get();
 
-                $totalRecords = $this->_model['User']::with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser')->select('count(*) as allcount')->count();
+                $totalRecords = $this->_model['Order']->with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser')->select('count(*) as allcount')->count();
 
 
                 // $perPage = $response->perPage();
