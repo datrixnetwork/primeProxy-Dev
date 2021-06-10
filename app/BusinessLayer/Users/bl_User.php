@@ -98,7 +98,7 @@ class bl_User{
             // $total   = $response->total();
 
             $response0 = array(
-                "draw" => intval($query['draw']),
+                "draw" => intval(5),
                 "iTotalRecords" => $totalRecords,
                 "iTotalDisplayRecords" => $totalRecordswithFilter,
                 'aaData'=>$response->toArray()
