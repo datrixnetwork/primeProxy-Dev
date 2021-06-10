@@ -43,7 +43,9 @@ class bl_User{
                 ->whereHas('userAccountInfo')
                 ->where('is_verified',$activeFlag)
                 ->orderBy('id', 'DESC')
-                ->Paginate($query['length']);
+                ->skip($query['start'])
+                ->take($query['length'])
+                ->get();
 
             }
             else{
@@ -59,7 +61,10 @@ class bl_User{
                     ->whereHas('userAccountInfo')
                     ->where($query['otherParam'])
                     ->orderBy('id', 'DESC')
-                    ->Paginate($query['length']);
+                    ->skip($query['start'])
+                    ->take($query['length'])
+                    ->get();
+                    //->Paginate($query['length']);
                 }
                 else{
                     if($disableLazyLoad == 1){
@@ -74,23 +79,29 @@ class bl_User{
                         ->whereHas('userInfo')
                         ->whereHas('userAccountInfo')
                         ->orderBy('id', 'DESC')
-                        ->Paginate($query['length']);
+                        ->skip($query['start'])
+                        ->take($query['length'])
+                        ->get();
                     }
 
                 }
-
             }
 
-
-
-            $perPage = $response->perPage();
-            $total   = $response->total();
+            $totalRecords = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+            ->whereHas('userInfo')
+            ->whereHas('userAccountInfo')->select('count(*) as allcount')->count();
+            $totalRecordswithFilter = 0;
+            foreach ($response as $key => $value) {
+                $totalRecordswithFilter ++;
+            }
+            // $perPage = $response->perPage();
+            // $total   = $response->total();
 
             $response0 = array(
                 "draw" => intval($query['draw']),
-                "iTotalRecords" => (int)$response->perPage(),
-                "iTotalDisplayRecords" => (int)$response->total(),
-                'aaData'=>$response->items()
+                "iTotalRecords" => $totalRecords,
+                "iTotalDisplayRecords" => $totalRecordswithFilter,
+                'aaData'=>$response->toArray()
             );
             return $response0;
 
