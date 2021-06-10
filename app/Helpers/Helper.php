@@ -155,7 +155,7 @@ class Helper{
         $query = array();
 
         $query['draw']    = (isset($queryParam['draw']) ? $queryParam['draw'] : 1 );
-        $query['start']   = (isset($queryParam['start']) ? $queryParam['start'] : 1 );
+        $query['start']   = (isset($queryParam['start']) && $queryParam['start']!=0 ? $queryParam['start'] : 1 );
         $query['length']  = (isset($queryParam['length']) ? $queryParam['length'] : 10 );
 
         if(isset($queryParam['search'])){
