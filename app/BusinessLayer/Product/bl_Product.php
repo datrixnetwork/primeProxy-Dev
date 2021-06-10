@@ -76,17 +76,35 @@ class bl_Product{
                     $sql->where($filter);
                 }
 
-                $response = $sql->orderBy('id', 'DESC')->Paginate($query['length']);
+                // $response = $sql->orderBy('id', 'DESC')->Paginate($query['length']);
+                $response = $sql->orderBy('id', 'DESC')
+                ->skip($query['start'])
+                ->take($query['length'])
+                ->get();
+                // ->Paginate($query['length']);
 
-                $perPage = $response->perPage();
-                $total   = $response->total();
+                // $perPage = $response->perPage();
+                // $total   = $response->total();
+
+                $totalRecords = $this->_model::select('count(*) as allcount')->count();
+                $totalRecordswithFilter = 0;
+                foreach ($response as $key => $value) {
+                    $totalRecordswithFilter ++;
+                }
 
                 $response0 = array(
                     "draw" => intval($query['draw']),
-                    "iTotalRecords" => (int)$response->perPage(),
-                    "iTotalDisplayRecords" => (int)$response->total(),
-                    'aaData'=>$response->items()
+                    "iTotalRecords" => $totalRecords,
+                    "iTotalDisplayRecords" => $totalRecordswithFilter,
+                    'aaData'=>$response->toArray()
                 );
+
+                // $response0 = array(
+                //     "draw" => intval($query['draw']),
+                //     "iTotalRecords" => (int)$response->perPage(),
+                //     "iTotalDisplayRecords" => (int)$response->total(),
+                //     'aaData'=>$response->items()
+                // );
 
 
             }

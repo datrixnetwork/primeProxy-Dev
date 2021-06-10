@@ -83,17 +83,36 @@ class bl_Order{
                     $sql->orWhere('sold_by','like',"%$searchVal%");
                 }
 
-                $response = $sql->where('is_arcieved',0)->orderBy('id', 'DESC')->Paginate($query['length']);
+                // $response = $sql->where('is_arcieved',0)->orderBy('id', 'DESC')->Paginate($query['length']);
 
-                $perPage = $response->perPage();
-                $total   = $response->total();
+                $response = $sql->orderBy('id', 'DESC')
+                ->skip($query['start'])
+                ->take($query['length'])
+                ->get();
+
+                $totalRecords = $this->_model['User']::with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser')->select('count(*) as allcount')->count();
+                $totalRecordswithFilter = 0;
+                foreach ($response as $key => $value) {
+                    $totalRecordswithFilter ++;
+                }
+
+                // $perPage = $response->perPage();
+                // $total   = $response->total();
+
 
                 $response0 = array(
                     "draw" => intval($query['draw']),
-                    "iTotalRecords" => (int)$response->perPage(),
-                    "iTotalDisplayRecords" => (int)$response->total(),
-                    'aaData'=>$response->items()
+                    "iTotalRecords" => $totalRecords,
+                    "iTotalDisplayRecords" => $totalRecordswithFilter,
+                    'aaData'=>$response->toArray()
                 );
+
+                // $response0 = array(
+                //     "draw" => intval($query['draw']),
+                //     "iTotalRecords" => (int)$response->perPage(),
+                //     "iTotalDisplayRecords" => (int)$response->total(),
+                //     'aaData'=>$response->items()
+                // );
                 return $response0;
             }
             else{
