@@ -47,6 +47,9 @@ class bl_User{
                 ->take($query['length'])
                 ->get();
 
+                $totalRecordswithFilter = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+                ->whereHas('userInfo')
+                ->whereHas('userAccountInfo')->select('count(*) as allcount')->where('is_verified',$activeFlag)->count();
             }
             else{
                 $query['otherParam'] = array_filter($query['otherParam']);
@@ -65,6 +68,9 @@ class bl_User{
                     ->take($query['length'])
                     ->get();
                     //->Paginate($query['length']);
+                    $totalRecordswithFilter = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+                    ->whereHas('userInfo')
+                    ->whereHas('userAccountInfo')->select('count(*) as allcount')->where($query['otherParam'])->count();
                 }
                 else{
                     if($disableLazyLoad == 1){
@@ -82,6 +88,10 @@ class bl_User{
                         ->skip($query['start'])
                         ->take($query['length'])
                         ->get();
+
+                        $totalRecordswithFilter = $this->_model['User']::with('userInfo')->with('userAccountInfo')
+                        ->whereHas('userInfo')
+                        ->whereHas('userAccountInfo')->select('count(*) as allcount')->count();
                     }
 
                 }
@@ -90,15 +100,12 @@ class bl_User{
             $totalRecords = $this->_model['User']::with('userInfo')->with('userAccountInfo')
             ->whereHas('userInfo')
             ->whereHas('userAccountInfo')->select('count(*) as allcount')->count();
-            $totalRecordswithFilter = 0;
-            foreach ($response as $key => $value) {
-                $totalRecordswithFilter ++;
-            }
+
             // $perPage = $response->perPage();
             // $total   = $response->total();
 
             $response0 = array(
-                "draw" => intval(5),
+                "draw" => intval($query['draw']),
                 "iTotalRecords" => $totalRecords,
                 "iTotalDisplayRecords" => $totalRecordswithFilter,
                 'aaData'=>$response->toArray()
