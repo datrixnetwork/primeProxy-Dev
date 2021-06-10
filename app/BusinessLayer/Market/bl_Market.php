@@ -44,21 +44,27 @@ class bl_Market{
                 if($searchVal != ''){
                     $sql->orWhere('market_place','like',"%$searchVal%");
                 }
-                $response = $sql->orderBy('id', 'DESC')->Paginate($query['length']);
-                $perPage = $response->perPage();
-                $total   = $response->total();
 
-                foreach ($response->items() as $key => $value) {
-                    $marketPlace = $value->market_place;
-                    $productCount= DB::select("Select count(id) as cnt from tbl_Products where market_place ='$marketPlace'");
-                    $response->items()[$key]->productCount = $productCount;
+                $totalRecordswithFilter = $sql->count();
+
+                $response = $sql->orderBy('id', 'DESC')
+                ->skip($query['start'])
+                ->take($query['length'])
+                ->get();
+
+                $totalRecords = $this->_model::select('count(*) as allcount')->count();
+
+                foreach ($response as $key => $value) {
+                     $marketPlace = $value->market_place;
+                     $productCount= DB::select("Select count(id) as cnt from tbl_Products where market_place ='$marketPlace'");
+                     $response[$key]->productCount = $productCount;
                 }
 
                 $response0 = array(
                     "draw" => intval($query['draw']),
-                    "iTotalRecords" => (int)$response->perPage(),
-                    "iTotalDisplayRecords" => (int)$response->total(),
-                    'aaData'=>$response->items()
+                    "iTotalRecords" => $totalRecords,
+                    "iTotalDisplayRecords" => $totalRecordswithFilter,
+                    'aaData'=>$response->toArray()
                 );
                 return $response0;
             }
