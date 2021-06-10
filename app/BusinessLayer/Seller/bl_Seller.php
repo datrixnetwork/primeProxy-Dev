@@ -39,20 +39,25 @@ class bl_Seller{
             if($sizeOfQuery > 0){
                 $qVal1       = (isset($query['search']) ? $query['search'] : '');
                 if($qVal1 == ''){
-                    $response = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))
+
+                    $sql = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))->newQuery();
+
+                    $totalRecordswithFilter = $sql->count();
+                    $response = $sql->orderBy('id', 'DESC')
                     ->skip($query['start'])
                     ->take($query['length'])
                     ->get();
-                    $totalRecordswithFilter = $this->_model::select('count(*) as allcount')->count();
+
 
                 }else{
-                    $response = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))
-                    ->where('seller_code','like',"%$qVal1%")
+                    $sql = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))->newQuery();
+                    $sql->where('seller_code','like',"%$qVal1%");
+                    $totalRecordswithFilter = $sql->count();
+
+                    $response = $sql->orderBy('id', 'DESC')
                     ->skip($query['start'])
                     ->take($query['length'])
                     ->get();
-
-                    $totalRecordswithFilter = $this->_model::select('count(*) as allcount')->where('seller_code','like',"%$qVal1%")->count();
 
                 }
 
