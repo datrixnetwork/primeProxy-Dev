@@ -87,7 +87,7 @@
                                                                         <table width="100%" cellspacing="0" cellpadding="0">
                                                                             <tbody>
                                                                                 <tr>
-                                                                                    <td class="esd-block-image es-p20b" align="center" style="font-size:0"><a href="#" target="_blank"><img src="http://178.128.158.204/PrimeProxyMarketing/dist/img/logo1.jpeg" alt style="display: block;" width="154"></a></td>
+                                                                                    <td class="esd-block-image es-p20b" align="center" style="font-size:0"><a href="#" target="_blank"><img src="http://www.primeproxymarketing.com/dist/img/logo1.jpeg" alt style="display: block;" width="154"></a></td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
