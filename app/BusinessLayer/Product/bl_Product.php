@@ -56,7 +56,7 @@ class bl_Product{
         $company       = new mdl_Company();
         $productImgUrl = $company::select('product_img_url')->first();
         $productImgUrl = $productImgUrl['product_img_url'];
-
+        $totalRecordswithFilter = 0;
 
         if(!$id){
 
@@ -87,9 +87,11 @@ class bl_Product{
                 // $total   = $response->total();
 
                 $totalRecords = $this->_model::select('count(*) as allcount')->count();
-                $totalRecordswithFilter = 0;
-                foreach ($response as $key => $value) {
-                    $totalRecordswithFilter ++;
+
+                $totalRecordswithFilter = $sql->select('count(*) as allcount')->count();
+
+                if($totalRecordswithFilter == 0){
+                    $totalRecordswithFilter = $totalRecords;
                 }
 
                 $response0 = array(
