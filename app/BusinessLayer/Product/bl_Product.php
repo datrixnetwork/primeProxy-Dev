@@ -76,6 +76,8 @@ class bl_Product{
                     $sql->where($filter);
                 }
 
+                $totalRecordswithFilter = $sql->count();
+
                 // $response = $sql->orderBy('id', 'DESC')->Paginate($query['length']);
                 $response = $sql->orderBy('id', 'DESC')
                 ->skip($query['start'])
@@ -88,7 +90,6 @@ class bl_Product{
 
                 $totalRecords = $this->_model::select('count(*) as allcount')->count();
 
-                $totalRecordswithFilter = $sql->select('count(*) as allcount')->count();
 
                 if($totalRecordswithFilter == 0){
                     $totalRecordswithFilter = $totalRecords;

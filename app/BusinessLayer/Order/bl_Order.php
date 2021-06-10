@@ -84,6 +84,7 @@ class bl_Order{
                 }
 
                 // $response = $sql->where('is_arcieved',0)->orderBy('id', 'DESC')->Paginate($query['length']);
+                $totalRecordswithFilter = $sql->count();
 
                 $response = $sql->orderBy('id', 'DESC')
                 ->skip($query['start'])
@@ -91,14 +92,13 @@ class bl_Order{
                 ->get();
 
                 $totalRecords = $this->_model['User']::with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser')->select('count(*) as allcount')->count();
-                $totalRecordswithFilter = 0;
-                foreach ($response as $key => $value) {
-                    $totalRecordswithFilter ++;
-                }
+
 
                 // $perPage = $response->perPage();
                 // $total   = $response->total();
-
+                if($totalRecordswithFilter == 0){
+                    $totalRecordswithFilter = $totalRecords;
+                }
 
                 $response0 = array(
                     "draw" => intval($query['draw']),

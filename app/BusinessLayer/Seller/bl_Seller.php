@@ -40,11 +40,20 @@ class bl_Seller{
                 $qVal1       = (isset($query['search']) ? $query['search'] : '');
                 if($qVal1 == ''){
                     $response = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))
-                    ->Paginate($query['length']);
+                    ->skip($query['start'])
+                    ->take($query['length'])
+                    ->get();
+                    $totalRecordswithFilter = $this->_model::select('count(*) as allcount')->count();
+
                 }else{
                     $response = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))
                     ->where('seller_code','like',"%$qVal1%")
-                    ->Paginate($query['length']);
+                    ->skip($query['start'])
+                    ->take($query['length'])
+                    ->get();
+
+                    $totalRecordswithFilter = $this->_model::select('count(*) as allcount')->where('seller_code','like',"%$qVal1%")->count();
+
                 }
 
             }
@@ -52,14 +61,27 @@ class bl_Seller{
 
                 $response      = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_qty',DB::raw("'$productImgUrl' AS imgPath"))->skip($query['start'])->take($query['length'])->get();
             }
-            $perPage = $response->perPage();
-            $total   = $response->total();
+
+            $totalRecords = $this->_model::select('count(*) as allcount')->count();
+
+            // $perPage = $response->perPage();
+            // $total   = $response->total();
+            if($totalRecordswithFilter == 0){
+                $totalRecordswithFilter = $totalRecords;
+            }
+
             $response0 = array(
                 "draw" => intval($query['draw']),
-                "iTotalRecords" => (int)$response->perPage(),
-                "iTotalDisplayRecords" => (int)$response->total(),
-                'aaData'=>$response->items()
+                "iTotalRecords" => $totalRecords,
+                "iTotalDisplayRecords" => $totalRecordswithFilter,
+                'aaData'=>$response->toArray()
             );
+            // $response0 = array(
+            //     "draw" => intval($query['draw']),
+            //     "iTotalRecords" => (int)$response->perPage(),
+            //     "iTotalDisplayRecords" => (int)$response->total(),
+            //     'aaData'=>$response->items()
+            // );
             $data0 = array($response,$response0);
 
             return $response0;
