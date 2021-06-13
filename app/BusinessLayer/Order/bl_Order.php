@@ -31,6 +31,13 @@ class bl_Order{
         $startOrderNo = $company::select('start_order_no')->first();
         $startOrderNo = $startOrderNo['start_order_no'];
 
+       $checkOrderExist  = $this->_model['Order']::where('store_order_no',$orderData['store_order_no'])->orderBy('created_on', 'desc')->first();
+
+       if(!blank($checkOrderExist)){
+            $response = array('message'=>'Order Already Exist');
+            return Helper::MakeResponse('error',$response);
+        }
+
         $lastOrder = $this->_model['Order']::orderBy('created_on', 'desc')->first();
         if(blank($lastOrder) || $lastOrder->order_no == null){
             $code       =$startOrderNo;
@@ -113,9 +120,11 @@ class bl_Order{
                 //     "iTotalDisplayRecords" => (int)$response->total(),
                 //     'aaData'=>$response->items()
                 // );
+
                 return $response0;
             }
             else{
+
                 $filter         = (isset($query['filter']) ? $query['filter'] : '');
                 $dateRange      = (isset($query['date']) ? $query['date'] : '');
                 // DB::connection()->enableQueryLog();
@@ -142,6 +151,7 @@ class bl_Order{
         }
             else
             {
+
                 $orderData = DB::select("SELECT o.id,o.order_no,is_admin_comm_paid,is_order_rejected,o.store_order_no,
                 o.seller_code,prd.product_name,prd.product_code,o.is_order_verified,us.is_refer AS isUserRefer,us.refer_by as referalBy,us.referel_count as referalCount,CONCAT(usin.first_name) AS userP,o.created_on,o.created_by,
                     o.is_comm_paid,o.status_code,o.store_order_no,o.sold_by,os.name,o.buyer_name,o.buyer_email,

@@ -185,7 +185,14 @@ class bl_User{
             $response = $this->_model['User']::find($id);
             return $response;
         }
+        else if(isset($request['body']['active_update']) && $request['body']['active_update'] == 1){
+            unset($request['body']['active_update']);
+            $updateQuery = DB::update('UPDATE tbl_Users set active='.$request['body']['active'].' WHERE id ='.$id);
+            $response = $this->_model['User']::find($id);
+            return $response;
+        }
         else{
+
             $first_name           = $request['body']['first_name'];
             $last_name            = $request['body']['last_name'];
             $gender               = $request['body']['gender'];
