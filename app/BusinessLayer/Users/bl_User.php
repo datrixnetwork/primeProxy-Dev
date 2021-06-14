@@ -34,6 +34,7 @@ class bl_User{
         if(!$id){
 
             $query       = $request['query'];
+            $query['start']   = (isset($query['start']) && $query['start'] ==1 ? 0 : $query['start']);
 
             if(isset($request['reqBody']['active'])){
                 $activeFlag  = (isset($request['reqBody']['active']) ? $request['reqBody']['active'] : 1);

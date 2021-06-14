@@ -63,6 +63,7 @@ class bl_Product{
             if($sizeOfQuery > 0){
                 $searchVal      = (isset($query['search']) ? $query['search'] : '');
                 $filter         = (isset($query['filter']) ? $query['filter'] : '');
+                $query['start']   = (isset($query['start']) && $query['start'] ==1 ? 0 : $query['start']);
 
                 $sql = $this->_model::select('product_img','block_on','product_code','id','active','product_name','proxy_comm','product_keywords','product_price','created_on','market_place','total_product_limit','product_daily_limit','product_monthly_qty','product_daily_qty','product_price','seller_code','is_block','sold_by','asin','product_daily_qty',DB::raw("'$productImgUrl' AS imgPath"))->newQuery();
 

@@ -75,6 +75,7 @@ class bl_Order{
             if($removeQueryParam == 0){
                 $searchVal      = (isset($query['search']) ? $query['search'] : '');
                 $filter         = (isset($query['filter']) ? $query['filter'] : '');
+                $query['start']   = (isset($query['start']) && $query['start'] ==1 ? 0 : $query['start']);
                 // DB::connection()->enableQueryLog();
                 $sql = $this->_model['Order']->newQuery();
 
@@ -97,6 +98,8 @@ class bl_Order{
                 ->skip($query['start'])
                 ->take($query['length'])
                 ->get();
+                // dd(DB::getQueryLog());
+
 
                 $totalRecords = $this->_model['Order']->with('product')->whereHas('product')->with('status')->with('orderAttachment')->with('proxyUser')->whereHas('proxyUser')->select('count(*) as allcount')->count();
 
