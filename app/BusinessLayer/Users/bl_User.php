@@ -53,13 +53,16 @@ class bl_User{
                 ->whereHas('userAccountInfo')->select('count(*) as allcount')->where('is_verified',$activeFlag)->count();
             }
             else{
+
                 $query['otherParam'] = array_filter($query['otherParam']);
                 $disableLazyLoad = 0;
                 if(isset($request['reqBody']['removeLazyLoading']) && $request['reqBody']['removeLazyLoading'] == 1){
                     $disableLazyLoad = 1;
                 }
                 if(isset($query['otherParam']) && $disableLazyLoad ==0){
-
+                    if($query['otherParam']['is_verified'] == 3){
+                        $query['otherParam']['is_verified'] == 0;
+                    }
                     $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
                     ->whereHas('userInfo')
                     ->whereHas('userAccountInfo')

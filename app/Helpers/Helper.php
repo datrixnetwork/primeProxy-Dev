@@ -192,6 +192,8 @@ class Helper{
         // if(isset($queryParam['is_login']) || isset($queryParam['is_verified'])){
             $isLogin    = (isset($queryParam['is_login']) ? $queryParam['is_login'] : '');
             $isVerified = (isset($queryParam['is_verified']) ? $queryParam['is_verified'] : '');
+            $isVerified = ($isVerified == 0 ? 3 : $isVerified );
+
             $accountCategory= (isset($queryParam['category']) ? $queryParam['category'] : '');
             $isBlock= (isset($queryParam['is_block']) ? $queryParam['is_block'] : '');
 
