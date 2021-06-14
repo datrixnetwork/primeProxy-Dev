@@ -60,9 +60,9 @@ class bl_User{
                     $disableLazyLoad = 1;
                 }
                 if(isset($query['otherParam']) && $disableLazyLoad ==0){
-                    if($query['otherParam']['is_verified'] == 3){
-                        $query['otherParam']['is_verified'] == 0;
-                    }
+                    // if($query['otherParam']['is_verified'] == 3){
+                    //     $query['otherParam']['is_verified'] == 0;
+                    // }
                     $response = $this->_model['User']::with('userInfo')->with('userAccountInfo')
                     ->whereHas('userInfo')
                     ->whereHas('userAccountInfo')
