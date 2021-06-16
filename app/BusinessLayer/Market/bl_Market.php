@@ -56,7 +56,7 @@ class bl_Market{
 
                 foreach ($response as $key => $value) {
                      $marketPlace = $value->market_place;
-                     $productCount= DB::select("Select count(id) as cnt from tbl_Products where market_place ='$marketPlace'");
+                     $productCount= DB::select("Select count(id) as cnt from tbl_Products where active=1 and market_place ='$marketPlace'");
                      $response[$key]->productCount = $productCount;
                 }
 
