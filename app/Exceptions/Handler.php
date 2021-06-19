@@ -41,6 +41,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         $obj = get_class($exception);
+
         switch($obj){
             case 'Throwable':
                  $status    = 'failed';
@@ -58,9 +59,9 @@ class Handler extends ExceptionHandler
             case 'Illuminate\Database\QueryException':
                 $status    = 'failed';
                 $code      = ($exception->getCode() > 0? $exception->getCode() :502);
-                $message   = $exception->getMessage();
-                $errorInfo = $exception->getPrevious()->errorInfo;
-                return response(array(['status' => $status,'code'=>$code, 'errors' => ['data' => $message,'errorInfo'=>$errorInfo],$code]),502);
+                $message   = "Invalid Request";
+                return response(array(['status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code]),502);
+                // return response(array(['status' => $status,'code'=>$code, 'errors' => ['data' => $message,'errorInfo'=>$errorInfo],$code]),502);
             break;
             case 'HttpClientException':
                 $status    = 'failed';
@@ -78,6 +79,12 @@ class Handler extends ExceptionHandler
                 $status    = 'failed';
                 $code      = ($exception->getCode() > 0? $exception->getCode() :403);
                 $message   = $exception->getMessage();
+                return response(array('status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code),403);
+            break;
+            case 'ErrorException':
+                $status    = 'failed';
+                $code      = ($exception->getCode() > 0? $exception->getCode() :403);
+                $message   = "Missing Param".str_replace('Undefined index:','',$exception->getMessage());
                 return response(array('status' => $status,'code'=>$code, 'errors' => ['data' => $message],$code),403);
             break;
             default:

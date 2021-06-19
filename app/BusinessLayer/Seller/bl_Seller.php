@@ -64,7 +64,7 @@ class bl_Seller{
             }
             else{
 
-                $response      = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_qty',DB::raw("'$productImgUrl' AS imgPath"))->skip($query['start'])->take($query['length'])->get();
+                $response      = $this->_model::select('product_img','product_code','id','active','proxy_comm','product_qty',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))->skip($query['start'])->take($query['length'])->get();
             }
 
             $totalRecords = $this->_model::select('count(*) as allcount')->count();
