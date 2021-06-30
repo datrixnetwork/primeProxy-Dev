@@ -321,7 +321,7 @@ class bl_User{
             (SELECT COUNT(id) AS activeUsers FROM tbl_Users WHERE active=1 AND is_verified = 1) AS activeUsers,
             (SELECT COUNT(id) AS activeUsers FROM tbl_Users WHERE active=1 AND is_verified = 0) AS pendingSignup,
             (SELECT COUNT(id) FROM tbl_Orders WHERE status_code=2 AND is_order_verified=1) AS pendingCustomerReview,
-            IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 0,IF(o.status_code = 5,IF(o.is_order_verified=1,o.id,0),0),0),0)) FROM tbl_Orders o  ),0) AS commEarned,
+            IFNULL((SELECT SUM(COALESCE(IF(o.is_comm_paid = 0,IF(o.status_code = 5,IF(o.is_order_verified=1,1,0),0),0),0)) FROM tbl_Orders o  ),0) AS commEarned,
             (SELECT COUNT(id) FROM tbl_Orders WHERE status_code=13 AND is_order_verified=1 AND DATE(user_comm_paid_on) = DATE(NOW())) AS completedOrders
 
             ) a ;");
