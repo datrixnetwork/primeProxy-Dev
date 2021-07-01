@@ -38,6 +38,7 @@ class bl_Seller{
 
             if($sizeOfQuery > 0){
                 $qVal1       = (isset($query['search']) ? $query['search'] : '');
+                $query['start']   = (isset($query['start']) && $query['start'] ==1 ? 0 : $query['start']);
                 if($qVal1 == ''){
 
                     $sql = $this->_model::select('seller_code','seller_email','seller_phone','seller_url','seller_load_sheet','id','active',DB::raw("'$sellerLoadSheet' AS loadSheetUrl"))->newQuery();
